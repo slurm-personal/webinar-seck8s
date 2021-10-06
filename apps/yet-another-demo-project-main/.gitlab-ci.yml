@@ -1,0 +1,52 @@
+stages: 
+  # after build stage
+  - security
+
+security:
+  stage: security
+  trigger:
+    include:
+    # Path to the shared repo
+      - project: 'whitespots/devsecops/pipelines'
+        # a proper branch name
+        ref: 'dev'
+        file: 'pipelines.yml'
+  variables:
+
+    # Secrets settings
+    SEC_SECRETS_SCAN_ENABLE: "true"
+    SEC_SECRETS_SCAN_ALLOW_FAILURE: "true"
+
+    # SAST settings
+    SEC_SAST_ENABLE: "true"
+    SEC_SAST_ALLOW_FAILURE: "true"
+    SEC_GREP: "true"
+    SEC_SEMGREP_CONFIG: "p/ci"
+    SEC_PYTHON: "true"
+    SEC_RUBY: "false"
+    SEC_PHP: "false"
+    SEC_JS: "true"
+    SEC_GOLANG: "false"
+    
+    # Dependency check settings
+    SEC_IMAGE_SCAN_ENABLE: "true"
+    SEC_IMAGE_TO_SCAN_PATH: "${SEC_CI_REGISTRY_IMAGE}:${SEC_CI_COMMIT_REF_NAME}"
+
+    # DAST settings
+    SEC_DAST_ENABLE: "true"
+    SEC_DAST_URL_TO_SCAN: "https://example.com"
+
+    # Mobile settings
+    SEC_MOBILE_ENABLE: "false"
+    SEC_MOBILE_APK_PATH: "./apk/diva-beta.apk"
+    SEC_MOBILE_SCAN_TYPE: "apk|ios"
+    SEC_MOBILE_ALLOW_FAILURE: "true"
+
+    # SAST (csharp) settings
+    SEC_SONARQUBE_ENABLE: "false"
+    SEC_SONARQUBE_URL: "https://sonarqube-test.whitespots.io"
+    SEC_SONARQUBE_PROJECT_KEY: "test-app"
+    SEC_SONARQUBE_SOURCES: "/usr/src"
+    SEC_SONARQUBE_TOKEN: "token"
+    SEC_SONARQUBE_PATH_TO_SLN: "token" # <- put in CI/CD variables for security reasons
+    SEC_SONARQUBE_ALLOW_FAILURE: "true"
