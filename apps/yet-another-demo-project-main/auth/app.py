@@ -94,7 +94,7 @@ def login():
 def signup():
 
     if request.method == 'GET':
-        return render_template('register.html')
+        return render_template('signup.html')
 
     # creates a dictionary of the form data
     data = request.form
@@ -120,7 +120,7 @@ def signup():
         db.session.add(user)
         db.session.commit()
 
-        return make_response('Successfully registered.', 201)
+        return make_response('Successfully signed up.', 201)
     else:
         # returns 202 if user already exists
         return make_response('User already exists. Please Log in.', 202)
