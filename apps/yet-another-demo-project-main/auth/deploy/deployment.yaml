@@ -12,82 +12,11 @@ spec:
       labels:
         run: auth-api
     spec:
-      volumes:
-        - name: sources
-          emptyDir: {}
-      initContainers:
-        - name: git-clone
-          image: python:3.7
-          volumeMounts:
-            - name: sources
-              mountPath: /sources
-          env:
-            - name: GIT_REPO
-              value: https://github.com/dmangonakis/mlops-community-lab1-team3-yelp.git
-            - name: GIT_BRANCH
-              value: "${GIT_BRANCH}"  # to be set via envsubst
-          command:
-            - "/bin/bash"
-            - "-euo"
-            - "xtrace"
-            - "-c"
-            # Note: ${GIT_REPO} and ${GIT_BRANCH} to be set via envsubst
-            - >-
-              echo "Installing the app: ${GIT_REPO}@${GIT_BRANCH}"
-              && git clone --branch ${GIT_BRANCH} ${GIT_REPO} /tmp/project
-              && mv /tmp/project/model_proxy /sources
-              && ls /sources
       containers:
-        - name: main
-          image: gcr.io/mlops-lab1-team3/yelp-dataset/model-proxy:v1.0
+        - name: app
+          image: atemate/webinar-k8sec_auth-api:v1.0
           ports:
           - containerPort: 8080
-          volumeMounts:
-            - name: sources
-              mountPath: /sources
-          env:
-            - name: POSTGRES_HOST
-              value: "${POSTGRES_HOST}"  # to be set via envsubst
-            - name: POSTGRES_PORT
-              value: "${POSTGRES_PORT}"  # to be set via envsubst
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-config
-                  key: user
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-config
-                  key: password
-            - name: POSTGRES_DATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-config
-                  key: database
-            - name: MODEL_HOST
-              value: "${MODEL_HOST}"  # to be set via envsubst
-            - name: MODEL_PORT
-              value: "${MODEL_PORT}"  # to be set via envsubst
-            - name: SERVER_HOST
-              value: "0.0.0.0"
-            - name: SERVER_PORT
-              value: "8080"
-            - name: SERVER_NUM_WORKERS
-              value: "2"
-            - name: DEBUG
-              value: "1"
           command:
-            - "/bin/bash"
-            - "-euo"
-            - "xtrace"
-            - "-c"
-            - >-
-              echo "Running the app"
-              && env | grep MODEL_
-              && env | grep POSTGRES_ | grep -v _PASSWORD
-              && cd /sources/model_proxy
-              && uvicorn app.main:app \
-                  --host ${SERVER_HOST} \
-                  --port ${SERVER_PORT} \
-                  --workers ${SERVER_NUM_WORKERS}
+            - "python"
+            - "app.py"
