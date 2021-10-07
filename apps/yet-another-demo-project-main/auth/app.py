@@ -39,7 +39,7 @@ class User(db.Model):
 # Default home route
 @app.route('/', methods=['GET'])
 def home():
-    return render_template('register.html')
+    return render_template('index.html')
 
 
 # route for logging user in
@@ -130,4 +130,4 @@ if __name__ == "__main__":
     # setting debug to True enables hot reload
     # and also provides a debuger shell
     # if you hit an error while running the server
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', port=8080, debug=True)
