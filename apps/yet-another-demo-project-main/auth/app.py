@@ -19,6 +19,8 @@ app = Flask(__name__)
 # INSTEAD CREATE A .env FILE AND STORE IN IT
 app.config['SECRET_KEY'] = 'secret123'
 app.config['REDIRECT_HOST'] = os.environ.get('REDIRECT_HOST', 'http://0.0.0.0:8000')
+print(f'App config: {app.config}')
+
 # database name
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
