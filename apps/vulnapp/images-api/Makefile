@@ -1,4 +1,4 @@
-IMAGE = atemate/webinar-k8sec_images-api:v1.0
+IMAGE = atemate/webinar-k8sec_images-api:v1.3
 
 .PHONY: docker-build
 docker-build:
@@ -10,4 +10,4 @@ docker-push:
 
 .PHONY: docker-run
 docker-run:
-	docker run -p 8082:8080 $(IMAGE)
+	docker run -p 8082:8080 -e SECRET_KEY=secret123 $(IMAGE)

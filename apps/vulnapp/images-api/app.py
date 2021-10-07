@@ -7,7 +7,8 @@ import random
 IMAGES_DIR_NAME = 'images'
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret123'
+# NEVER HARDCODE CONFIGURATION IN CODE
+app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 
 
 @app.route('/', methods=['GET'])
@@ -16,19 +17,17 @@ def home():
     image = os.path.join(IMAGES_DIR_NAME, image_name)
 
     token = request.args.get('token')
-    if token:
-        try:
-            session['user_role'] = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256']).get('role')
-        except jwt.DecodeError as e:
-            print(f'ERROR: Invalid signature or expiration date: {e}')
-            return '403', 403
-        except Exception as e:
-            print(f'ERROR: {e}. Dont care')
-            return '500', 500
+    if not token:
+        return '401 Unauthorized (missing token)', 401
 
-    # TODO: can session['user_role'] be non-None and request.args['token'] be None?
-    if session.get('user_role') is None:
-        return '403', 403
+    try:
+        session['user_role'] = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256']).get('role')
+    except jwt.DecodeError as e:
+        print(f'ERROR: Invalid signature or expiration date: {e}')
+        return '403 Forbidden (invalid token)', 403
+    except Exception as e:
+        print(f'ERROR: {e}. Dont care')
+        return '500 Internal Server Error', 500
 
     if session.get('user_role') == 'admin':
         image_name = request.args.get('img', '1.jpg')

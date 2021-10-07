@@ -15,13 +15,12 @@ from werkzeug.utils import redirect
 
 app = Flask(__name__)
 # configuration
-# NEVER HARDCODE YOUR CONFIGURATION IN YOUR CODE
-# INSTEAD CREATE A .env FILE AND STORE IN IT
-app.config['SECRET_KEY'] = 'secret123'
-app.config['REDIRECT_HOST'] = os.environ.get('REDIRECT_HOST', 'http://0.0.0.0:8000')
-print(f'App config: {app.config}')
+# NEVER HARDCODE CONFIGURATION IN CODE
+app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+app.config['REDIRECT_HOST'] = os.environ['REDIRECT_HOST']
 
 # database name
+# TODO: use a separate Postgres
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 # creates SQLALCHEMY object
@@ -41,7 +40,12 @@ class User(db.Model):
 # Default home route
 @app.route('/', methods=['GET'])
 def home():
-    return render_template('index.html')
+    return render_template(
+        'index.html',
+        context={
+           'redirect_host': app.config['REDIRECT_HOST'],
+        }
+    )
 
 
 # route for logging user in
@@ -82,8 +86,8 @@ def login():
             'exp': datetime.utcnow() + timedelta(minutes=30)
         }, app.config['SECRET_KEY'])
 
-        redir_url = app.config.get("REDIRECT_HOST")
-        return redirect(f'{redir_url}/?token={token}')
+        redir_url = f'{app.config["REDIRECT_HOST"]}/?token={token}'
+        return redirect(redir_url)
     # returns 403 if password is wrong
     return make_response(
         'Could not verify',

@@ -14,9 +14,12 @@ spec:
     spec:
       containers:
       - name: app
-        image: atemate/webinar-k8sec_images-api:v1.0
+        image: atemate/webinar-k8sec_images-api:v1.3
         ports:
         - containerPort: 8080
+        env:
+        - name: SECRET_KEY
+          value: secret123  # TODO: mount from a secret
         command: ["python", "app.py"]
 ---
 apiVersion: v1
@@ -35,9 +38,9 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: auth-api
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+  name: images-api
+  # annotations:
+  #   nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
   rules:
