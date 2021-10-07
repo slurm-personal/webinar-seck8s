@@ -5,13 +5,13 @@
     <title>Welcome</title>
 </head>
 <body>
-    <h2>Default welcome-picture</h2><br/>
+    <h2>Here is your picture:</h2><br/>
     {% if context['role'] == 'admin' %}
     <form method="get" action="/">
-        <input type="text" placeholder="serval.jpeg" name="img"><br/>
+        <input type="text" placeholder="1.jpg" name="img"><br/>
         <input type="submit">
     </form>
     {% endif %}
-    <img src="data:image/png;base64, {{ context['img_data'] }}" width="300px" height="300px">
+    <img src="data:image/png;base64, {{ context['img_data'] }}" width="300px">
 </body>
 </html>

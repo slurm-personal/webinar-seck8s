@@ -8,3 +8,5 @@ Cats service:
     unauthenticated mode: 503
     user mode: button "Next image" (selecting a random image from a local directory)
     admin mode: text input "filename" (allows "../")
+
+Additional: use Postgres, store secret in K8s secrets, read it via kubectl, access DB directly

@@ -1,4 +1,4 @@
-IMAGE = atemate/webinar-k8sec_auth-api:v1.0
+IMAGE = atemate/webinar-k8sec_image-api:v1.0
 
 .PHONY: docker-build
 docker-build:
@@ -10,4 +10,4 @@ docker-push:
 
 .PHONY: docker-run
 docker-run:
-	docker run -p 8081:8080 -e REDIRECT_HOST=http://0.0.0.0:8082 $(IMAGE)
+	docker run -p 8082:8080 $(IMAGE)

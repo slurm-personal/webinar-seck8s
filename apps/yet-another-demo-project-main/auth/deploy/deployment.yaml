@@ -17,6 +17,9 @@ spec:
           image: atemate/webinar-k8sec_auth-api:v1.0
           ports:
           - containerPort: 8080
+          env:
+            name: REDIRECT_HOST
+            value: http://image-api
           command:
             - "python"
             - "app.py"

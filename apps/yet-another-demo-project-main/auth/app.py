@@ -18,7 +18,7 @@ app = Flask(__name__)
 # NEVER HARDCODE YOUR CONFIGURATION IN YOUR CODE
 # INSTEAD CREATE A .env FILE AND STORE IN IT
 app.config['SECRET_KEY'] = 'secret123'
-app.config['REDIRECT_HOST'] = os.environ.get('redirect_host', 'http://0.0.0.0:8000')
+app.config['REDIRECT_HOST'] = os.environ.get('REDIRECT_HOST', 'http://0.0.0.0:8000')
 # database name
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
@@ -80,7 +80,8 @@ def login():
             'exp': datetime.utcnow() + timedelta(minutes=30)
         }, app.config['SECRET_KEY'])
 
-        return redirect(f'{app.config.get("REDIRECT_HOST")}/?token={token}')
+        redir_url = app.config.get("REDIRECT_HOST")
+        return redirect(f'{redir_url}/?token={token}')
     # returns 403 if password is wrong
     return make_response(
         'Could not verify',
@@ -96,17 +97,12 @@ def signup():
     if request.method == 'GET':
         return render_template('signup.html')
 
-    # creates a dictionary of the form data
-    data = request.form
-
-    # gets name, email and password
-    name, email = data.get('name'), data.get('email')
-    password = data.get('password')
+    name = request.form.get('name')
+    email = request.form.get('email')
+    password = request.form.get('password')
 
     # checking for existing user
-    user = User.query \
-        .filter_by(email=email) \
-        .first()
+    user = User.query.filter_by(email=email).first()
     if not user:
         # database ORM object
         user = User(
@@ -120,7 +116,8 @@ def signup():
         db.session.add(user)
         db.session.commit()
 
-        return make_response('Successfully signed up.', 201)
+        # return make_response('Successfully signed up.', 201)
+        return render_template('signup_success.html')
     else:
         # returns 202 if user already exists
         return make_response('User already exists. Please Log in.', 202)
