@@ -2,10 +2,11 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
+  namespace: web-dashboard
   name: kube-web-view
 ---
 kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: kube-web-view
 rules:
@@ -19,7 +20,7 @@ rules:
   verbs: [list, get]
 ---
 kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: kube-web-view
 roleRef:
@@ -28,5 +29,5 @@ roleRef:
   name: kube-web-view
 subjects:
 - kind: ServiceAccount
+  namespace: web-dashboard
   name: kube-web-view
-  namespace: default
