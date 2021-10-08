@@ -1,0 +1,17 @@
+# source: https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/pod/priv-exec-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-privileged
+  labels:
+    app: pentest
+spec:
+  # specify the node: `kubectl get node -o jsonpath='{.items[*].metadata.name}'`
+  nodeName: seck8s
+  containers:
+  - name: main
+    image: ubuntu
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "sleep infinity" ]
+    securityContext:
+      privileged: true
