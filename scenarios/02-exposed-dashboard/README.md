@@ -42,9 +42,11 @@ Ingress:
 @@ -27,7 +27,7 @@ spec:
 ```
     most likely, used this template: https://artifacthub.io/packages/helm/decayofmind/kube-web-view?modal=template&template=ingress.yaml
-    LDAP auth disabled: `nginx-ldapauth-proxy.enabled	bool	false`
+    LDAP auth disabled by default: `nginx-ldapauth-proxy.enabled	bool	false`
 
-
-
-
+Errors:
+    - Maybe they had LDAP or OAuth, but ingress made exposed/bypassed it
+    - understand your access control: it had admin privs
+    - Secrets in ConfigMaps (even though...)
+    - --show-container-logs: ehh
 
