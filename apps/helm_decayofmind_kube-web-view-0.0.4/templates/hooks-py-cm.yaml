@@ -1,0 +1,13 @@
+{{- if .Values.hooks }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kube-web-view.fullname" . }}-hooks-py
+  labels:
+{{ include "kube-web-view.labels" . | indent 4 }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+{{- end }}
+data:
+  hooks.py: {{ toYaml .Values.hooks | nindent 4 }}
+{{- end }}
