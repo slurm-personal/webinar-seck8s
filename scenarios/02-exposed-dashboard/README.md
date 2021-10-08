@@ -1,6 +1,12 @@
 # Profit the K8s Dashboard
 
 
+## He Who Cannot Be Named
+
+Original paper: https://habr.com/ru/post/568842/
+Their paper: https://habr.com/ru/post/569176/
+
+
 
 can see deployments in all ns
 
@@ -28,6 +34,8 @@ Default security config:
     secrets:
         avail but hidden by default
         http://localhost:8080/clusters/local/namespaces/mock-payload/secrets/db-secret
+        show Secrets (hidden)
+        show secrets in ConfigMap
 
 however, some secrets might be stored in ConfigMaps
     http://localhost:8080/clusters/local/namespaces/mock-payload/configmaps
