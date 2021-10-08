@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: images-api
+spec:
+  selector:
+    matchLabels:
+      run: images-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: images-api
+    spec:
+      containers:
+      - name: app
+        image: atemate/webinar-k8sec_images-api:v1.3
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SECRET_KEY
+          value: secret123  # TODO: mount from a secret
+        command: ["python", "app.py"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: images-api
+  labels:
+    run: images-api
+spec:
+  selector:
+    run: images-api
+  ports:
+  - port: 80
+    targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: images-api
+  # annotations:
+  #   nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: vulnapp-images.seck8s.slurm.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: images-api
+            port:
+              number: 80

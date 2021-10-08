@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome</title>
+</head>
+<body>
+    <h2>Here is your picture:</h2><br/>
+    {% if context['role'] == 'admin' %}
+    <form method="get" action="/">
+        <input type="text" placeholder="1.jpg" name="img"><br/>
+        <input type="submit">
+    </form>
+    {% endif %}
+    <img src="data:image/png;base64, {{ context['img_data'] }}" width="300px">
+</body>
+</html>
