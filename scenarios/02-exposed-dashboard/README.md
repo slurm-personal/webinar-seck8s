@@ -1,24 +1,26 @@
 # Profit the K8s Dashboard
 
-
-## He Who Cannot Be Named
-
-Original paper: https://habr.com/ru/post/568842/
-Their paper: https://habr.com/ru/post/569176/
+Exposed and unprotected Kubernetes dashboard is one of the most common attack entrypoints on K8s clusters.
 
 
+## Attack on ${NAME} June 2021
 
-can see deployments in all ns
+### Story:
+- July 21: user's public report: https://habr.com/ru/post/568842/
+- July 22: team's tech report: https://habr.com/ru/post/569176/
+
+### Description:
+- Mistake in ingress configuration => Kubernetes WebView dashboard is available via several public DNS names
+- The dashboard is unprotected (no auth)
+- read-only access (cannot create new K8s object)
+- all K8s namespaces
+- secrets are hidden by the dashboard (default behaviour), howver the team stored some secrets in config maps
+- container logs are accessible, which is NOT default behaviour (`--show-container-logs`)
 
 
----
-```
-# install via helm: https://artifacthub.io/packages/helm/decayofmind/kube-web-view?modal=install
-$ helm repo add decayofmind https://decayofmind.github.io/charts/
-$ k create ns web-dashboard-ingress
-$ helm -n web-dashboard-ingress install my-kube-web-view decayofmind/kube-web-view --version 0.0.4
-```
----
+Note: there exist a Helm package [decayofmind/kube-web-view](https://artifacthub.io/packages/helm/decayofmind/kube-web-view?modal=install) which can integrate with LDAP and OAuth.
+
+
 
 
 <!-- TODO: develop фронт и бэк на django -->
