@@ -5,11 +5,12 @@ Exposed and unprotected Kubernetes dashboard is one of the most common attack en
 
 ## Attack on ${NAME} June 2021
 
-### Story:
+### Timeline:
 - July 21: user's public report: https://habr.com/ru/post/568842/
 - July 22: team's tech report: https://habr.com/ru/post/569176/
 
 ### Description:
+- ingress.enabled=true (NOT default)
 - Mistake in ingress configuration => Kubernetes WebView dashboard is available via several public DNS names
 - The dashboard is unprotected (no auth)
 - read-only access (cannot create new K8s object)
@@ -44,6 +45,7 @@ however, some secrets might be stored in ConfigMaps
 
 RBAC:
     - read-only (both in github manifests and helm)
+
 
 Ingress:
 ```
