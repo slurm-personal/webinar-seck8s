@@ -6,7 +6,10 @@ from pathlib import Path
 from flask import Flask, jsonify, make_response, redirect, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 
-logging.basicConfig(level=logging.INFO)
+# Debug mode by default: on production, might leak secrets
+DEBUG = bool(os.environ.get("DEBUG", True))
+
+logging.basicConfig(level=logging.DEBUG if DEBUG else logging.INFO)
 logger = logging.getLogger("ganimed")
 
 CURRENT_DIR = Path(__file__).parent
@@ -30,7 +33,6 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 
 db = SQLAlchemy(app)
 
-# Database ORMs
 class EmailData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     to = db.Column(db.String(70))
@@ -84,7 +86,7 @@ def register():
         html_template=html_template,
         txt_template=txt_template,
     )
-    logger.info(f"Request received: {data}")  # <-- Data leakage point
+    logger.debug(f"Request received: {data}")  # <-- Data leakage point
     db.session.add(data)
     db.session.commit()
 
@@ -100,4 +102,4 @@ if __name__ == "__main__":
     # setting debug to True enables hot reload
     # and also provides a debuger shell
     # if you hit an error while running the server
-    app.run(host="0.0.0.0", port=8080, debug=True)
+    app.run(host="0.0.0.0", port=8080, debug=DEBUG)
