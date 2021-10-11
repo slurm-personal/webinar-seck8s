@@ -7,7 +7,3 @@ docker-build:
 .PHONY: docker-push
 docker-push:
 	docker push $(IMAGE)
-
-.PHONY: docker-run
-docker-run:
-	docker run -p 8082:8080 -e SECRET_KEY=secret123 $(IMAGE)

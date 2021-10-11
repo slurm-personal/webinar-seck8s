@@ -20,7 +20,7 @@ NS=vulnapp
 k create ns $NS
 k -n $NS create secret generic auth-db-secret \
     --from-literal root_password=P@ssw0rd \
-    --from-literal table=userdata \
+    --from-literal database=userdata \
     --from-literal username=user \
     --from-literal password=password
 k -n $NS create secret generic auth-api-secret \

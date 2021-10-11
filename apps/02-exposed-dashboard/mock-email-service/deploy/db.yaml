@@ -17,12 +17,26 @@ spec:
       - image: mysql:5.6
         name: mysql
         env:
-          # Use secret in real usage
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: mock-email-db-secret
+              key: mysql_table
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: mock-email-db-secret
+              key: mysql_user
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mock-email-db-secret
+              key: mysql_password
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: mock-email-db-secret
-              key: password
+              key: mysql_root_password
         ports:
         - containerPort: 3306
           name: mysql

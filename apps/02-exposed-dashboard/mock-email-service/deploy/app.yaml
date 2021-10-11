@@ -39,7 +39,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: mock-email-service.seck8s.slurm.io
+  - host: mock-email.seck8s.slurm.io
     http:
       paths:
       - path: /

@@ -7,22 +7,3 @@ docker-build:
 .PHONY: docker-push
 docker-push:
 	docker push $(IMAGE)
-
-.PHONY: docker-run
-docker-run:
-	docker run --rm -d \
-		--name mysql \
-		-p 33060:3306 \
-		-e MYSQL_DATABASE=userdata \
-		-e MYSQL_USER=username \
-		-e MYSQL_PASSWORD=password \
-		mysql:5.7
-	docker run -p 8081:8080 \
-		-e SQL_HOST=0.0.0.0 \
-		-e SQL_PORT=33060 \
-		-e SQL_DB=userdata \
-		-e SQL_USERNAME=username \
-		-e SQL_PASSWORD=password \
-		-e REDIRECT_HOST=http://0.0.0.0:8082 \
-		-e SECRET_KEY=secret123 \
-		$(IMAGE)
