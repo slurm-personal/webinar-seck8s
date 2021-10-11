@@ -10,6 +10,7 @@
     <form method="get" action="/">
         <input type="text" placeholder="1.jpg" name="img"><br/>
         <input type="submit">
+        <input type="hidden" name="token" value="{{ context['token'] }}" />
     </form>
     {% endif %}
     <img src="data:image/png;base64, {{ context['img_data'] }}" width="300px">

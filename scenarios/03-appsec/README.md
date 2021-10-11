@@ -15,13 +15,18 @@ Additional: use Postgres, store secret in K8s secrets, read it via kubectl, acce
 ---
 
 ```
-NS=vulnapp2
+NS=vulnapp
 
 k create ns $NS
 k -n $NS create secret generic auth-db-secret \
+    --from-literal root_password=P@ssw0rd \
+    --from-literal table=userdata \
+    --from-literal username=user \
+    --from-literal password=password
 k -n $NS create secret generic auth-api-secret \
     --from-literal secret=secret123
-k -n $NS apply -f ./deploy
+k -n $NS apply -f ../../apps/03-appsec/images-api/deploy
+k -n $NS apply -f ../../apps/03-appsec/auth-api/deploy
 
 k -n $NS get all,ingress
 k -n $NS get po -w

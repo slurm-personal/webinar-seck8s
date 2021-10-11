@@ -40,7 +40,8 @@ def home():
         'index.html',
         context={
            'img_data': img_data,
-           'role': session.get('user_role')
+           'role': session.get('user_role'),
+           'token': token,
         }
     )
 

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: atemate/webinar-k8sec_auth-api:v1.5
+        image: atemate/webinar-k8sec_auth-api:v1.6
         ports:
         - containerPort: 8080
         env:
@@ -24,7 +24,7 @@ spec:
               name: auth-api-secret
               key: secret
         - name: REDIRECT_HOST
-          value: http://vulnapp-images.seck8s.slurm.io/
+          value: http://images.vulnapp.seck8s.slurm.io/
         - name: DB_HOST
           value: auth-db
         - name: DB_TABLE
@@ -64,7 +64,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: vulnapp-auth.seck8s.slurm.io
+  - host: auth.vulnapp.seck8s.slurm.io
     http:
       paths:
       - path: /

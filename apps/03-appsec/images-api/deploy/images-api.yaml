@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: atemate/webinar-k8sec_images-api:v1.3
+        image: atemate/webinar-k8sec_images-api:v1.4
         ports:
         - containerPort: 8080
         env:
@@ -45,7 +45,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: vulnapp-images.seck8s.slurm.io
+  - host: images.vulnapp.seck8s.slurm.io
     http:
       paths:
       - path: /
