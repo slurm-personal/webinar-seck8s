@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mock-email-app
+spec:
+  selector:
+    matchLabels:
+      run: mock-email-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: mock-email-app
+    spec:
+      containers:
+      - name: app
+        image: atemate/webinar-k8sec_mock-email-service:v1.5
+        env:
+        - name: DB_HOST
+          value: mock-email-db
+        - name: DB_PORT
+          value: '3306'
+        - name: DB_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: mock-email-db-secret
+              key: mysql_database
+        - name: DB_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: mock-email-db-secret
+              key: mysql_user
+        - name: DB_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: mock-email-db-secret
+              key: mysql_password
+        ports:
+        - containerPort: 8080
+        command: ["python", "app.py"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mock-email-app
+  labels:
+    run: mock-email-app
+spec:
+  selector:
+    run: mock-email-app
+  ports:
+  - port: 80
+    targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: auth-api
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: mock-email.seck8s.slurm.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: mock-email-app
+            port:
+              number: 80
