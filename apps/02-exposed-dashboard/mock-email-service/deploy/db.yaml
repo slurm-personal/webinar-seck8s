@@ -19,22 +19,22 @@ spec:
         env:
         - name: MYSQL_DATABASE
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: mock-email-db-secret
-              key: mysql_table
+              key: mysql_database
         - name: MYSQL_USER
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: mock-email-db-secret
               key: mysql_user
         - name: MYSQL_PASSWORD
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: mock-email-db-secret
               key: mysql_password
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: mock-email-db-secret
               key: mysql_root_password
         ports:

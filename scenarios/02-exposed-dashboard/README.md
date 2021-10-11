@@ -65,22 +65,39 @@ Errors:
 
 ----
 
+Deploy dashboard (unexposed) + ingress:
+```
+NS=web-dashboard
+
+k create ns $NS
+k -n $NS apply -f ../../apps/02-exposed-dashboard/kube-web-view/deploy
+k -n $NS apply -f ../../apps/02-exposed-dashboard/kube-web-view/insecure-deploy/
+
+k -n $NS get all,ingress
+k -n $NS get po -w
+
+```
+
+
+
+
+
+Run mock app:
+
 ```
 NS=mock-email
 
 k create ns $NS
-k -n $NS create secret generic auth-db-secret \
-    --from-literal root_password=P@ssw0rd \
-    --from-literal database=userdata \
-    --from-literal username=user \
-    --from-literal password=password
-k -n $NS create secret generic auth-api-secret \
-    --from-literal secret=secret123
+k -n $NS apply -f ../../apps/02-exposed-dashboard/mock-email-service/deploy
+
+k -n $NS get all,ingress
+k -n $NS get po -w
 
 
-k -n $NS create secret generic mock-email-db-secret \
-    --from-literal mysql_root_password=P@ssw0rd \
-    --from-literal mysql_user=user \
-    --from-literal mysql_password=secretpassword
-k -n mock-payload apply -f ./deploy
+k delete ns $NS
 ```
+
+
+
+
+# TODO: Think what to do with DB leaked password (port-forward?)
