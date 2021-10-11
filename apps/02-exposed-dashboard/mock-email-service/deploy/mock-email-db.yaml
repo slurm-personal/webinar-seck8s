@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mock-email-db
+spec:
+  selector:
+    matchLabels:
+      app: mock-email-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mock-email-db
+    spec:
+      containers:
+      - image: mysql:5.6
+        name: mysql
+        env:
+          # Use secret in real usage
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mock-email-db-secret
+              key: password
+        ports:
+        - containerPort: 3306
+          name: mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mock-email-db
+spec:
+  ports:
+  - port: 3306
+  selector:
+    app: mock-email-db
+  clusterIP: None

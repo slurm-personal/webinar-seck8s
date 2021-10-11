@@ -10,3 +10,23 @@ Cats service:
     admin mode: text input "filename" (allows "../")
 
 Additional: use Postgres, store secret in K8s secrets, read it via kubectl, access DB directly
+
+
+---
+
+```
+NS=vulnapp2
+
+k create ns $NS
+k -n $NS create secret generic auth-db-secret \
+k -n $NS create secret generic auth-api-secret \
+    --from-literal secret=secret123
+k -n $NS apply -f ./deploy
+
+k -n $NS get all,ingress
+k -n $NS get po -w
+
+
+k delete ns $NS
+
+```

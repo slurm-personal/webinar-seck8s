@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  namespace: mock-payload
+  name: backend
+  labels:
+    app: mock-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      tier: backend
+  template:
+    metadata:
+      labels:
+        tier: backend
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        env:
+        - name: NGINX_PORT
+          value: "8080"
+        ports:
+        - containerPort: 8080

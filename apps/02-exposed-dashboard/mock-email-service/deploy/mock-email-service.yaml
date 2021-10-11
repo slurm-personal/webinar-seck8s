@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mock-email-service
+spec:
+  selector:
+    matchLabels:
+      run: mock-email-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: mock-email-service
+    spec:
+      containers:
+      - name: app
+        image: atemate/webinar-k8sec_mock-email-service:v1.4
+        ports:
+        - containerPort: 8080
+        command: ["python", "app.py"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mock-email-service
+  labels:
+    run: mock-email-service
+spec:
+  selector:
+    run: mock-email-service
+  ports:
+  - port: 80
+    targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: auth-api
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: mock-email-service.seck8s.slurm.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: mock-email-service
+            port:
+              number: 80
