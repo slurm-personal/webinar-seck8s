@@ -1,5 +1,0 @@
-Flask==2.0.2
-Flask-SQLAlchemy==2.5.1
-PyJWT==2.2.0
-SQLAlchemy==1.4.25
-Werkzeug==2.0.2
