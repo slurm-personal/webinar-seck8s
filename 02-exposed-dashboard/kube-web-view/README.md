@@ -24,4 +24,4 @@ k delete ns $NS
 ```
 
 
-> Note: Alternatively, one can install the dashboad using the Helm package [decayofmind/kube-web-view](https://artifacthub.io/packages/helm/decayofmind/kube-web-view?modal=install), which can integrate with LDAP and OAuth.
+> Note: Alternatively, you can install the dashboad using the Helm package [decayofmind/kube-web-view](https://artifacthub.io/packages/helm/decayofmind/kube-web-view?modal=install), which can integrate with LDAP and OAuth.

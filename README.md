@@ -14,3 +14,7 @@ seck8s   Ready    control-plane,master   17h   v1.22.2
 ```
 
 <!-- TODO: add more cluster info -->
+
+## Good links
+- [RedHat's article](https://cloud.redhat.com/blog/cryptojacking-attacks-in-kubernetes-how-to-stop-them) on Crytptojacking attacks in Kubernetes and how to stop them
+-

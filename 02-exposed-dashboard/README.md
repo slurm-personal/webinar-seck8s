@@ -35,8 +35,10 @@ Exposed and unprotected Kubernetes dashboard is one of the most common attack en
 
 ## Attack on Tesla, 2018
 
+[Tesla 2018](https://redlock.io/blog/cryptojacking-tesla)
+
 - Also, accidentally exposed K8s dashboard
-- then, AWS creds stolen
+- then, AWS S3 creds were stolen
 - mining Monero on their K8s cluster
 - carefully hiding presence of mining pods (CPU utilisation throttling, using non-default mining pools, hiding IP via CloudFare CDN)
 
