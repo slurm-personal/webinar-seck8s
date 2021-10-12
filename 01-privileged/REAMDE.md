@@ -7,6 +7,7 @@ TODO: picture with possible attacks.
 
 https://github.com/BishopFox/badPods/
 
+
 ### 1. pod privileged
 
 From https://kubernetes.io/docs/concepts/policy/pod-security-policy/#privileged:
@@ -294,6 +295,9 @@ Privileged pod can't read node's processes:
 $ ls /host/proc
 <empty>
 ```
+
+
+
 
 ### 2. pod hostpid
 
