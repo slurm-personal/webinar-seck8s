@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  namespace: web-dashboard
+  namespace: exposed-dashboard
   name: kube-web-view
 ---
 kind: ClusterRole
@@ -14,7 +14,7 @@ rules:
   - '*'
   resources:
   - '*'
-  verbs: [list, get]
+  verbs: [list, get]  # Note restricted read-only permissions for the dasboard SA
 - nonResourceURLs:
   - '*'
   verbs: [list, get]
@@ -29,5 +29,5 @@ roleRef:
   name: kube-web-view
 subjects:
 - kind: ServiceAccount
-  namespace: web-dashboard
+  namespace: exposed-dashboard
   name: kube-web-view

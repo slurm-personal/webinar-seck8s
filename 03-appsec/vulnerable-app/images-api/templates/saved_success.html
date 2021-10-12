@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome</title>
+</head>
+<body>
+    <h2>File successfully saved</h2>
+    <div class="container">
+        <label>To: {{ context['new_file'] }}</label>
+        <meta http-equiv="refresh" content="3; url=/?token={{ context['token'] }}" />
+    </div>
+</body>
+</html>

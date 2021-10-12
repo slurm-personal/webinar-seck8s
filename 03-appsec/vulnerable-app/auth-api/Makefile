@@ -1,4 +1,4 @@
-IMAGE = atemate/webinar-k8sec_auth-api:v1.6
+IMAGE = atemate/webinar-k8sec_auth-api:v1.7
 
 .PHONY: docker-build
 docker-build:

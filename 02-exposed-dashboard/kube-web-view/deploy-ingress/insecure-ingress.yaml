@@ -1,12 +1,12 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  namespace: web-dashboard
+  namespace: exposed-dashboard
   name: kube-web-view-insecure
 spec:
   ingressClassName: nginx
   rules:
-  - host: rus-vote.seck8s.slurm.io  # was empty => default backend
+  - host: null # "rus-vote.seck8s.slurm.io"  # Empty => default backend
     http:
       paths:
       - path: /
