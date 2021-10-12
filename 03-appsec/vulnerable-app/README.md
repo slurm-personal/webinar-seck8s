@@ -4,8 +4,10 @@ Installation:
 
 ```sh
 NS=vulnapp
-
 k create ns $NS
+
+k apply -f another-app/deploy
+
 k -n $NS create secret generic auth-db-secret \
     --from-literal root_password=P@ssw0rd \
     --from-literal database=userdata \
@@ -13,6 +15,7 @@ k -n $NS create secret generic auth-db-secret \
     --from-literal password=password
 k -n $NS create secret generic auth-api-secret \
     --from-literal secret=secret123
+
 k -n $NS apply -f images-api/deploy
 k -n $NS apply -f auth-api/deploy
 ```
@@ -25,7 +28,9 @@ k -n $NS get po -w
 
 Uninstall:
 ```sh
-k delete ns $NS
+k delete -f another-app/deploy
+k -n $NS delete -f images-api/deploy
+k -n $NS delete -f auth-api/deploy
 ```
 
 

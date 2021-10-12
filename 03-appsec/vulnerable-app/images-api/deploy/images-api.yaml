@@ -12,7 +12,6 @@ spec:
       labels:
         run: images-api
     spec:
-      serviceAccountName: images-serviceaccount
       containers:
       - name: app
         image: atemate/webinar-k8sec_images-api:v1.8
