@@ -1,16 +1,49 @@
-# Demo vulnerable app
+# Demo vulnerable application
+
+Installation:
+
+```sh
+NS=vulnapp
+
+k create ns $NS
+k -n $NS create secret generic auth-db-secret \
+    --from-literal root_password=P@ssw0rd \
+    --from-literal database=userdata \
+    --from-literal username=user \
+    --from-literal password=password
+k -n $NS create secret generic auth-api-secret \
+    --from-literal secret=secret123
+k -n $NS apply -f images-api/deploy
+k -n $NS apply -f auth-api/deploy
+```
+
+Check status:
+```sh
+k -n $NS get all,ingress
+k -n $NS get po -w
+```
+
+Uninstall:
+```sh
+k delete ns $NS
+```
+
+
+## Service: auth-api
+- `/signup`: register new users and saves their details (email, name, password) into the MySQL database
+- `/login`: check user-provided pair email+password and generate a temporary JWT token with the `user_role='user'` using the secret stored in environment variable `SECRET_KEY`
+- once the login was successful, redirects to the `image-api` service with the JWT token stored in GET parameter `token`
+
+## Service: image-api
+- `/` (no `token`): fails with 401
+- `/` (invalid `token`): fails with 403
+- `/` (valid JWT in `token`): decodes the JWT using the key stored in env var `SECRET_KEY`, extracts the `user_role` from it. If `user_role='admin'`, offers additional functionality to select the file to read or upload a file
+
 
 ## Vulnerabilities:
 1. Weak jwt auth scheme with client-side role trust
 2. Weak hardcoded HS256 secret
 3. Local File Inclusion
-
-## How to use it
-
-1. Deploy it
-2. Go to auth service (5000 port on dev)
-3. Sign-up any user and login
-4. Get redirection to the page with the greatest cat in the world :)
-5. Decode JWT token and try to get more privileges
-6. Write any interesting file, that you want to read and look at your image b64 data
-7. Profit
+4. Remote File Inclusion
+5. Root inside the container, ubuntu with apt-get
+6. Too permissive service account

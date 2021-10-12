@@ -2,10 +2,6 @@
 
 October 13, 2021
 
-## Structure:
-- attacks grouped by the entry point
-
-
 ## Setup
 ```
 $ k version
@@ -16,3 +12,5 @@ $ k get nodes
 NAME     STATUS   ROLES                  AGE   VERSION
 seck8s   Ready    control-plane,master   17h   v1.22.2
 ```
+
+<!-- TODO: add more cluster info -->

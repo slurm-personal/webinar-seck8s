@@ -12,17 +12,15 @@ spec:
       labels:
         run: images-api
     spec:
+      serviceAccountName: images-serviceaccount
       containers:
       - name: app
-        image: atemate/webinar-k8sec_images-api:v1.4
+        image: atemate/webinar-k8sec_images-api:v1.8
         ports:
         - containerPort: 8080
         env:
         - name: SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              name: auth-api-secret
-              key: secret
+          value: "secret123"  # <-- Vulnearbility: hard-coded secret stored in sources
         command: ["python", "app.py"]
 ---
 apiVersion: v1

@@ -5,14 +5,23 @@
     <title>Welcome</title>
 </head>
 <body>
-    <h2>Here is your picture:</h2><br/>
+    <h2>Here is your picture:</h2>
     {% if context['role'] == 'admin' %}
+    <h3>Admin page</h3>
     <form method="get" action="/">
-        <input type="text" placeholder="1.jpg" name="img"><br/>
+        <input type="text" placeholder="1.jpg" name="img">
         <input type="submit">
         <input type="hidden" name="token" value="{{ context['token'] }}" />
     </form>
+    <form method="post" action="/?token={{ context['token'] }}" enctype="multipart/form-data">
+        <br/>
+        <label for="file">Or upload your own picture:</label>
+        <input name="file" type="file">
+        <input type="submit" value="Upload">
+    </form>
+    <br/>
     {% endif %}
-    <img src="data:image/png;base64, {{ context['img_data'] }}" width="300px">
+
+    <img width="300px" src="data:image/png;base64, {{ context['img_data'] }}">
 </body>
 </html>

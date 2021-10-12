@@ -48,3 +48,11 @@ Exposed and unprotected Kubernetes dashboard is one of the most common attack en
 - using Monero docker image from public dockerhub
 - mining pods running as dashboard’s service account, which means they were deployed via a K8s dashboard
 - 2020 & 2021: attacking Kubeflow's pipelines to deploy mining images
+
+
+# Prevention
+- do not expose the Kubernetes dashboard to the Internet
+- use RBAC
+- dashboard's SA has very limited permissions
+- allow only trusted images
+- regularly monitor the runtime environment (this includes monitoring the running containers, their images, and the processes that they run)

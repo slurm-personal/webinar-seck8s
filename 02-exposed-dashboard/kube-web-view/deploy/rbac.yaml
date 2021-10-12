@@ -14,7 +14,7 @@ rules:
   - '*'
   resources:
   - '*'
-  verbs: [list, get]
+  verbs: [list, get]  # Note restricted read-only permissions for the dasboard SA
 - nonResourceURLs:
   - '*'
   verbs: [list, get]

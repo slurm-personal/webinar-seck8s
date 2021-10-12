@@ -6,7 +6,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: rus-vote.seck8s.slurm.io  # was empty => default backend
+  - host: null # "rus-vote.seck8s.slurm.io"  # Empty => default backend
     http:
       paths:
       - path: /

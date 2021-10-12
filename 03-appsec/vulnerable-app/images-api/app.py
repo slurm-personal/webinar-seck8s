@@ -5,17 +5,17 @@ import random
 import jwt
 from flask import Flask, render_template, request, session
 
-IMAGES_DIR_NAME = "images"
-
 app = Flask(__name__)
+
 app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]
+app.config["IMAGES_DIR_NAME"] = "images"
 
-
-@app.route("/", methods=["GET"])
+@app.route("/", methods=["GET", "POST"])
 def home():
     image_name = random.choice(os.listdir("images"))
-    image = os.path.join(IMAGES_DIR_NAME, image_name)
+    image = os.path.join(app.config["IMAGES_DIR_NAME"], image_name)
 
+    # TODO: should pass token via POST parameters
     token = request.args.get("token")
     if not token:
         return "401 Unauthorized (missing token)", 401
@@ -30,12 +30,29 @@ def home():
         print(f"ERROR: {e}. Dont care")
         return "500 Internal Server Error", 500
 
-    if session.get("user_role") == "admin":
-        image_name = request.args.get("img", "1.jpg")
-        image = os.path.join(IMAGES_DIR_NAME, image_name)
+    # File upload functionality
+    if 'file' in request.files:
+        file = request.files['file']
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file and file.filename:
+            new_file = os.path.join(app.config['IMAGES_DIR_NAME'], file.filename)
+            file.save(new_file)
+            # return f"Saved file: {os.path.abspath(new_file)}", 200
+            return render_template(
+                "saved_success.html",
+                context={
+                    "new_file": new_file,
+                    "token": token,
+                },
+            )
 
-    with open(image, "rb") as file:
-        img_data = base64.b64encode(file.read()).decode("utf-8")
+    # File read functionality
+    if session.get("user_role") == "admin":
+        image_name = request.args.get("img") or "1.jpg"
+        image = os.path.join(app.config["IMAGES_DIR_NAME"], image_name)
+    with open(image, "rb") as f:
+        img_data = base64.b64encode(f.read()).decode("utf-8")
 
     return render_template(
         "index.html",
