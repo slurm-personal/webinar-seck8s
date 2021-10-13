@@ -1,5 +1,7 @@
 # Kubernetes Security Webinar
-- October 13, 2021
+October 13, 2021
+
+Authors:
 - Artem Yushkovsky ([LinkedIn](https://www.linkedin.com/in/artem-yushkovsky/), [GitHub](https://github.com/atemate))
 - Maxim Mosharov @ [Whitespots.io](https://whitespots.io/) ([LinkedIn](https://www.linkedin.com/in/maxim-mosharov-50904113b/))
 
