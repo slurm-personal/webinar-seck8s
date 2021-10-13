@@ -2,6 +2,11 @@
 
 Application vulnerabilities can bring wide range of different *attack entrypoints*. In addition to Kubernetes-specific vulnerabilities and misconfigurations, this can lead to various beautiful attacks.
 
+---
+![K8s threat matrix](../static/03-k8s-matrix.png)
+*Kubernetes threat matrix for the demo attack below*
+
+---
 
 ## Demo: run a crypto-miner in the cluster
 
