@@ -6,7 +6,7 @@ Run a pod with elevated permissions:
 - [host volumes](https://kubernetes.io/docs/concepts/policy/pod-security-policy/#volumes-and-file-systems) (mount host volumes into the pod)
 
 ---
-![K8s threat matrix](../static/02-k8s-matrix.png)
+![K8s threat matrix](../static/01-k8s-matrix.png)
 *Kubernetes threat matrix for a generic attack involving privileged pods*
 
 ## kubectl ssh node
