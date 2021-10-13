@@ -71,7 +71,7 @@ Update
 Print all etcd secrets:
 ```
 [root@seck8s /]# db=`strings /var/lib/etcd/member/snap/db`; for x in `echo "$db" | grep eyJhbGciOiJ`; do name=`echo "$db" | grep $x -B40 | grep registry`; echo $name \| $x; echo; done
-B/registry/secrets/kube-system/resourcequota-controller-token-7q9bd | eyJhbGciOiJSUzI1NiIsImtpZCI6ImIwdF90VkFtOEpHYjFEaW5HaDlVay1ZZE5SVkRQQXUzUllsSVo0eDYyUDAifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0...
+B/registry/secrets/kube-system/resourcequota-controller-token-7q9bd | eyJhbGciOiJSUzI1NiIsImtpZ...
 ...
 ```
 
@@ -90,7 +90,7 @@ apiVersion: v1
 clusters:
 - cluster:
     certificate-authority-data: DATA+OMITTED
-    server: https://188.246.229.4:6443
+    server: https://188.2***:6443
   name: kubernetes
 contexts:
 - context:
@@ -151,7 +151,7 @@ Kubernetes node-specific secrets:
 apiVersion: v1
 clusters:
 - cluster:
-    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUMvakND...
+    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0...
 ...
 
 
@@ -179,7 +179,7 @@ clusters:
 - name: local
   cluster:
     server: https://[10.96***.1]:443
-    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUMvakNDQWVhZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRJeE1UQXdOekUwTVRVek5Gb1hEVE14TVRBd...
+    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1J...
 ...
 ```
 
@@ -229,7 +229,7 @@ Sudoers is writeable:
 ...
 eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
         inet 188.246.***.0  netmask 255.255.255.248  broadcast 188.246.2***
-        ether fa:16:3e:a2:da:a4  txqueuelen 1000  (Ethernet)
+        ether fa:16:3e:***  txqueuelen 1000  (Ethernet)
         RX packets 2503451  bytes 1816731848 (1.6 GiB)
         RX errors 0  dropped 0  overruns 0  frame 0
         TX packets 715727  bytes 151818416 (144.7 MiB)
@@ -247,7 +247,7 @@ Stats: 0:00:48 elapsed; 4 hosts completed (3 up), 3 undergoing SYN Stealth Scan
 SYN Stealth Scan Timing: About 51.57% done; ETC: 10:23 (0:00:45 remaining)
 ...
 
-Nmap scan report for 188.246.229.*
+Nmap scan report for 188.246***.0
 Host is up (0.00025s latency).
 Not shown: 990 closed ports
 PORT     STATE    SERVICE
@@ -261,14 +261,14 @@ PORT     STATE    SERVICE
 5906/tcp filtered unknown
 5907/tcp filtered unknown
 5910/tcp filtered cm
-MAC Address: FA:16:3E:5F:09:07 (Unknown)
+MAC Address: FA:16:3E:5F:*** (Unknown)
 
-Nmap scan report for 188.246.229.*
+Nmap scan report for 188.246.***
 Host is up (0.00023s latency).
 Not shown: 999 closed ports
 PORT   STATE    SERVICE
 22/tcp filtered ssh
-MAC Address: FA:16:3E:28:13:16 (Unknown)
+MAC Address: FA:16:3E:28:*** (Unknown)
 ...
 ```
 
@@ -277,10 +277,10 @@ MAC Address: FA:16:3E:28:13:16 (Unknown)
 ```
 [root@seck8s /]# ps aux | grep kube
 nix       2085  0.0  0.3 1097052 50460 ?       Ssl  Oct11   0:27 /usr/local/bin/python -m kube_web --port=8080 --show-container-logs
-root     12256  1.4  0.7 824056 124268 ?       Ssl  Oct07 120:32 kube-controller-manager --allocate-node-cidrs=true --authentication-kubeconfig=/etc/kubernetes/controller-manager.conf --authorization-kubeconfig=/etc/kubernetes/controller-manager.conf --bind-address=127.0.0.1 --client-ca-file=/etc/kubernetes/pki/ca.crt --cluster-cidr=10.2**.0.0/16 --cluster-name=kubernetes --cluster-signing-cert-file=/etc/kubernetes/pki/ca.crt --cluster-signing-key-file=/etc/kubernetes/pki/ca.key --controllers=*,bootstrapsigner,tokencleaner --kubeconfig=/etc/kubernetes/controller-manager.conf --leader-elect=true --port=0 --requestheader-client-ca-file=/etc/kubernetes/pki/front-proxy-ca.crt --root-ca-file=/etc/kubernetes/pki/ca.crt --service-account-private-key-file=/etc/kubernetes/pki/sa.key --service-cluster-ip-range=10.96.***/12 --use-service-account-credentials=true
-root     12263  1.2  0.4 11215796 81424 ?      Ssl  Oct07 101:52 etcd --advertise-client-urls=https://188.246.22***:2379 --cert-file=/etc/kubernetes/pki/etcd/server.crt --client-cert-auth=true --data-dir=/var/lib/etcd --initial-advertise-peer-urls=https://188.246.2***:2380 --initial-cluster=seck8s=https://188.246***:2380 --key-file=/etc/kubernetes/pki/etcd/server.key --listen-client-urls=https://127.0.0.1:2379,https://188.246***:2379 --listen-metrics-urls=http://127.0.0.1:2381 --listen-peer-urls=https://188.246***:2380 --name=seck8s --peer-cert-file=/etc/kubernetes/pki/etcd/peer.crt --peer-client-cert-auth=true --peer-key-file=/etc/kubernetes/pki/etcd/peer.key --peer-trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt --snapshot-count=10000 --trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
+root     12256  1.4  0.7 824056 124268 ?       Ssl  Oct07 120:32 kube-controller-manager --allocate-node-cidrs=true --authentication-kubeconfig=/etc/kubernetes/controller-manager.conf --authorization-kubeconfig=/etc/kubernetes/controller-manager.conf --bind-address=127.0.0.1 --client-ca-file=/etc/kubernetes/pki/ca.crt --cluster-cidr=10.2**.0.0/16 --cluster-name=kubernetes --cluster-signing-cert-file=/etc/kubernetes/pki/ca.crt --cluster-signing-key-file=/etc/kubernetes/pki/ca.key --controllers=*,bootstrapsigner,tokencleaner --kubeconfig=/etc/kubernetes/controller-manager.conf --leader-elect=true --port=0 --requestheader-client-ca-file=/etc/kubernetes/pki/front-proxy-ca.crt --root-ca-file=/etc/kubernetes/pki/ca.crt --service-account-private-key-file=/etc/kubernetes/pki/sa.key --service-cluster-ip-range=10.96***/12 --use-service-account-credentials=true
+root     12263  1.2  0.4 11215796 81424 ?      Ssl  Oct07 101:52 etcd --advertise-client-urls=https://188.246***:2379 --cert-file=/etc/kubernetes/pki/etcd/server.crt --client-cert-auth=true --data-dir=/var/lib/etcd --initial-advertise-peer-urls=https://188.246***:2380 --initial-cluster=seck8s=https://188.246***:2380 --key-file=/etc/kubernetes/pki/etcd/server.key --listen-client-urls=https://127.0.0.1:2379,https://188.246***:2379 --listen-metrics-urls=http://127.0.0.1:2381 --listen-peer-urls=https://188.246***:2380 --name=seck8s --peer-cert-file=/etc/kubernetes/pki/etcd/peer.crt --peer-client-cert-auth=true --peer-key-file=/etc/kubernetes/pki/etcd/peer.key --peer-trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt --snapshot-count=10000 --trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
 root     12270  0.2  0.3 754532 63176 ?        Ssl  Oct07  19:51 kube-scheduler --authentication-kubeconfig=/etc/kubernetes/scheduler.conf --authorization-kubeconfig=/etc/kubernetes/scheduler.conf --bind-address=127.0.0.1 --kubeconfig=/etc/kubernetes/scheduler.conf --leader-elect=true --port=0
-root     12272  5.4  2.3 1179884 389876 ?      Ssl  Oct07 456:25 kube-apiserver --advertise-address=188.246.2*** --allow-privileged=true --authorization-mode=Node,RBAC --client-ca-file=/etc/kubernetes/pki/ca.crt --enable-admission-plugins=NodeRestriction --enable-bootstrap-token-auth=true --etcd-cafile=/etc/kubernetes/pki/etcd/ca.crt --etcd-certfile=/etc/kubernetes/pki/apiserver-etcd-client.crt --etcd-keyfile=/etc/kubernetes/pki/apiserver-etcd-client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-client-certificate=/etc/kubernetes/pki/apiserver-kubelet-client.crt --kubelet-client-key=/etc/kubernetes/pki/apiserver-kubelet-client.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --proxy-client-cert-file=/etc/kubernetes/pki/front-proxy-client.crt --proxy-client-key-file=/etc/kubernetes/pki/front-proxy-client.key --requestheader-allowed-names=front-proxy-client --requestheader-client-ca-file=/etc/kubernetes/pki/front-proxy-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/etc/kubernetes/pki/sa.pub --service-account-signing-key-file=/etc/kubernetes/pki/sa.key --service-cluster-ip-range=10.96.***/12 --tls-cert-file=/etc/kubernetes/pki/apiserver.crt --tls-private-key-file=/etc/kubernetes/pki/apiserver.key
+root     12272  5.4  2.3 1179884 389876 ?      Ssl  Oct07 456:25 kube-apiserver --advertise-address=188.24*** --allow-privileged=true --authorization-mode=Node,RBAC --client-ca-file=/etc/kubernetes/pki/ca.crt --enable-admission-plugins=NodeRestriction --enable-bootstrap-token-auth=true --etcd-cafile=/etc/kubernetes/pki/etcd/ca.crt --etcd-certfile=/etc/kubernetes/pki/apiserver-etcd-client.crt --etcd-keyfile=/etc/kubernetes/pki/apiserver-etcd-client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-client-certificate=/etc/kubernetes/pki/apiserver-kubelet-client.crt --kubelet-client-key=/etc/kubernetes/pki/apiserver-kubelet-client.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --proxy-client-cert-file=/etc/kubernetes/pki/front-proxy-client.crt --proxy-client-key-file=/etc/kubernetes/pki/front-proxy-client.key --requestheader-allowed-names=front-proxy-client --requestheader-client-ca-file=/etc/kubernetes/pki/front-proxy-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/etc/kubernetes/pki/sa.pub --service-account-signing-key-file=/etc/kubernetes/pki/sa.key --service-cluster-ip-range=10.96.***/12 --tls-cert-file=/etc/kubernetes/pki/apiserver.crt --tls-private-key-file=/etc/kubernetes/pki/apiserver.key
 root     12365  2.5  1.0 1882772 173092 ?      Ssl  Oct07 211:17 /usr/bin/kubelet --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf --config=/var/lib/kubelet/config.yaml --container-runtime=remote --container-runtime-endpoint=/run/containerd/containerd.sock --pod-infra-container-image=k8s.gcr.io/pause:3.5
 root     12481  0.0  0.2 748212 47612 ?        Ssl  Oct07   1:10 /usr/local/bin/kube-proxy --config=/var/lib/kube-proxy/config.conf --hostname-override=seck8s
 root     15698  0.0  0.0 112820  2396 ?        R+   09:56   0:00 grep --color=auto kube

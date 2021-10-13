@@ -1,5 +1,5 @@
 apiVersion: rbac.authorization.k8s.io/v1
-# TODO: change to role
+# TODO: change to the role
 kind: ClusterRole
 metadata:
   name: deployment-reader-writer
@@ -16,7 +16,7 @@ metadata:
   name: deployment-reader-writer
 subjects:
 - kind: ServiceAccount
-  name: default       # <-- unintentionally grant higher privileges
+  name: default              # <-- unintentionally grant higher privileges
   namespace: vulnerable-app  # <-- for the default SA in current namespace
 roleRef:
   apiGroup: rbac.authorization.k8s.io

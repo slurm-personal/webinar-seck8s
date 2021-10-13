@@ -2,6 +2,8 @@
 
 Exposed and unprotected Kubernetes dashboard is one of the most common *attack entrypoints* on K8s clusters.
 
+> Note the [RedHat's article](https://cloud.redhat.com/blog/cryptojacking-attacks-in-kubernetes-how-to-stop-them) on Crytptojacking attacks in Kubernetes and how to stop them.
+
 
 ## Attack on Tesla, 2018
 
@@ -34,7 +36,6 @@ Exposed and unprotected Kubernetes dashboard is one of the most common *attack e
 - read-only access (cannot create new K8s object) to all K8s namespaces
 - [secrets were hidden by default](https://codeberg.org/hjacobs/kube-web-view/src/commit/bc5231296/deploy/deployment.yaml#L27-L29) in the dashboard (`--show-secrets`), however the team stored some secrets in config maps (!)
 - [container logs were accessible](https://codeberg.org/hjacobs/kube-web-view/src/commit/bc5231296/deploy/deployment.yaml#L24-L26), which is NOT default (`--show-container-logs`), in addition, the DEBUG mode was enabled on the production servers
-
 
 > Note: other secrets like DB credentials might have been leaked to be used for future attacks (however, the team has claimed to have all secrets rotated) after the attack was discovered.
 

@@ -12,16 +12,6 @@ Application vulnerabilities can bring wide range of different *attack entrypoint
 - **Entrypoint**: web application
 
 
-
-<!-- 2. Go to [auth service](http://auth.vulnerable-app.seck8s.slurm.io/)
-3. Sign-up any user and login
-4. Get redirection to the [image service](https://images.vulnerable-app.seck8s.slurm.io/) with the greatest cat in the world :)
-5. Decode JWT token and try to get more privileges
-6. Write any interesting file (take a look at the image b64 data you'll receive)
-7. Upload any interesting file (note: the container runs as root so you're relatively free)
-8. Get working `kubectl` for the cluster -->
-
-
 ## Steps to reproduce
 
 1. deploy [./vulnerable-app](vulnerable-app) (both `auth-api` and `images-api`) and `another-app` (empty)
