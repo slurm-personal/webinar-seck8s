@@ -2,6 +2,10 @@
 
 October 13, 2021
 
+Authors:
+- Artem Yushkovsky ([LinkedIn](https://www.linkedin.com/in/artem-yushkovsky/), [GitHub](https://github.com/atemate))
+- Maxim Mosharov @ [Whitespots.io](https://whitespots.io/) ([LinkedIn](https://www.linkedin.com/in/maxim-mosharov-50904113b/))
+
 ## Setup
 ```
 $ k version
@@ -15,7 +19,11 @@ seck8s   Ready    control-plane,master   17h   v1.22.2
 
 <!-- TODO: add more cluster info -->
 
+
 ## Good links
 - [RedHat's article](https://cloud.redhat.com/blog/cryptojacking-attacks-in-kubernetes-how-to-stop-them) on Crytptojacking attacks in Kubernetes and how to stop them
+- [BishopFox/badPods](https://github.com/BishopFox/badPods/) - GitHub repo exploring privileged containers' capabilities
+<!-- - [Kubernetes in Action](https://www.manning.com/books/kubernetes-in-action) by Marko Lukša - great book on Kubernetes -->
 -
+
 <!-- TODO: more links -->

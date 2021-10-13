@@ -1,14 +1,24 @@
 # Exploit Application Vulnerabilities
 
+Application vulnerabilities can bring wide range of different *attack entrypoints*. In addition to Kubernetes-specific vulnerabilities and misconfigurations, this can lead to various beautiful attacks.
 
-Application vulnerabilities can bring wide range of different entrypoints. In addition to Kubernetes-specific vulnerabilities and misconfigurations, this can lead to various beautiful attacks.
+
+## Demo: run a crypto-miner in the cluster
+
+### Attack description:
+- **Setup**: a K8s cluster with a web application deployed
+- **Attacker**: an external user without any access to the cluster
+- **Target**: kubectl access to the cluster (then: cluster compute resources, cluster availability, application data, more)
+- **Entrypoint**: web application
 
 
 ## Steps to reproduce
 
 <!-- TODO: выбросить, смерджить с Attacks -->
 
-1. Deploy [vulnerable-app](vulnerable-app) (both `auth-api` and `images-api`)
+1. deploy [vulnerable-app](vulnerable-app) (both `auth-api` and `images-api`) and `another-app` (empty)
+2. explore the [images service]()
+
 2. Go to [auth service](http://auth.vulnapp.seck8s.slurm.io/)
 3. Sign-up any user and login
 4. Get redirection to the [image service](https://images.vulnapp.seck8s.slurm.io/) with the greatest cat in the world :)

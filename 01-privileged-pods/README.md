@@ -19,17 +19,19 @@ Recommended to check out:
 
 ## Quick demo
 
-### Prerequisites:
-- kubectl access to the cluster
-- permission to run a pod (alternatively: a deployment, a replicaset, a job, etc)
-- permissions enforced by `PodSecurityPolicy` or an admission controller (allowed by default):
-  - `securityContext.privileged: true`
-  - `hostPath: ...`
-  - `hostNetwork: true`
-  - `hostPID: true`
-  - `hostIPC: true`
-- permissions to do `kube-exec` (not required: alternatively run a [reverse shell pod](https://github.com/BishopFox/badPods/tree/main/manifests/everything-allowed#reverse-shell-pods))
-
+### Attack description:
+- **Setup**: a K8s cluster
+- **Attacker**: a user with kubectl access to the cluster
+  - permission to run a pod (alternatively: a deployment, a replicaset, a job, etc)
+  - permissions enforced by `PodSecurityPolicy` or an admission controller (allowed by default):
+    - `securityContext.privileged: true`
+    - `hostPath: ...`
+    - `hostNetwork: true`
+    - `hostPID: true`
+    - `hostIPC: true`
+  - permissions to do `kube-exec` (not required: alternatively run a [reverse shell pod](https://github.com/BishopFox/badPods/tree/main/manifests/everything-allowed#reverse-shell-pods))
+- **Target**: K8s cluster
+- **Entrypoint**: Kube API (kubectl)
 
 
 ### Run a privileged pod and connect:

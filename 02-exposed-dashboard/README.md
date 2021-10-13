@@ -1,5 +1,6 @@
 # Profit the K8s Dashboard
-Exposed and unprotected Kubernetes dashboard is one of the most common attack entrypoints on K8s clusters.
+
+Exposed and unprotected Kubernetes dashboard is one of the most common *attack entrypoints* on K8s clusters.
 
 
 ## Attack on Tesla, 2018
@@ -39,9 +40,17 @@ Exposed and unprotected Kubernetes dashboard is one of the most common attack en
 
 
 
+## Demo: attack on ${NAME}
+
+### Attack description:
+- **Setup**: a K8s cluster with an application + database deployed in one namespace, K8s read-only dashboard deployed in another namespace
+- **Attacker**: an external user without any access to the cluster
+- **Target**: application data
+- **Entrypoint**: K8s dashboard
+
 ### Steps to reproduce:
-1. install the kubernetes dashboard [./kube-web-view](kube-web-view) in an insecure way
-2. install the mock email-sending service [./mock-email-service](mock-email-service)
+1. deploy the kubernetes dashboard [./kube-web-view](kube-web-view) in an insecure way
+2. deploy the mock email-sending service [./mock-email-service](mock-email-service)
 3. explore the service at [mock-email.seck8s.slurm.io](mock-email.seck8s.slurm.io), register a user
 4. explore the dashboard:
    - [http://anything.seck8s.slurm.io/](http://anything.seck8s.slurm.io/)
@@ -52,7 +61,7 @@ Exposed and unprotected Kubernetes dashboard is one of the most common attack en
    - [pods](http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/_all/pods?) or deployments, namely read [logs of the mock-email/mock-email-app](http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/mock-email/deployments/mock-email-app/logs)
 
 
-## Prevention
+## Advices on prevention
 - do not expose the Kubernetes dashboard to the Internet
 - use RBAC
 - dashboard's SA has very limited permissions

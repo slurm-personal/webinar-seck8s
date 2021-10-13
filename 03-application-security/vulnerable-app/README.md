@@ -3,34 +3,33 @@
 Installation:
 
 ```sh
-NS=vulnapp
-k create ns $NS
+k create ns vulnerable-app
 
 k apply -f another-app/deploy
 
-k -n $NS create secret generic auth-db-secret \
+k -n vulnerable-app create secret generic auth-db-secret \
     --from-literal root_password=P@ssw0rd \
     --from-literal database=userdata \
     --from-literal username=user \
     --from-literal password=password
-k -n $NS create secret generic auth-api-secret \
+k -n vulnerable-app create secret generic auth-api-secret \
     --from-literal secret=secret123
 
-k -n $NS apply -f images-api/deploy
-k -n $NS apply -f auth-api/deploy
+k -n vulnerable-app apply -f images-api/deploy
+k -n vulnerable-app apply -f auth-api/deploy
 ```
 
 Check status:
 ```sh
-k -n $NS get all,ingress
-k -n $NS get po -w
+k -n vulnerable-app get all,ingress
+k -n vulnerable-app get po -w
 ```
 
 Uninstall:
 ```sh
 k delete -f another-app/deploy
-k -n $NS delete -f images-api/deploy
-k -n $NS delete -f auth-api/deploy
+k -n vulnerable-app delete -f images-api/deploy
+k -n vulnerable-app delete -f auth-api/deploy
 ```
 
 
