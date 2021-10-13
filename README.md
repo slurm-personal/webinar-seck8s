@@ -3,9 +3,10 @@
 - Artem Yushkovsky ([LinkedIn](https://www.linkedin.com/in/artem-yushkovsky/), [GitHub](https://github.com/atemate))
 - Maxim Mosharov @ [Whitespots.io](https://whitespots.io/) ([LinkedIn](https://www.linkedin.com/in/maxim-mosharov-50904113b/))
 
+---
 
 ![K8s threat matrix](./static/k8s-matrix.png)
-<div align="right">*Threat matrix for Kubernetes [introduced](https://www.microsoft.com/security/blog/2020/04/02/attack-matrix-kubernetes/) in April 2020 by Azure Security Center*</divh>
+*Threat matrix for Kubernetes [introduced](https://www.microsoft.com/security/blog/2020/04/02/attack-matrix-kubernetes/) in April 2020 by Azure Security Center*
 
 
 ## Demo setup
