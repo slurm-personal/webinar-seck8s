@@ -3,24 +3,24 @@
 Insecure installation instructions for [KubeWebView](https://codeberg.org/hjacobs/kube-web-view/) in the demo cluster:
 
 ```sh
-NS=exposed-dashboard
-k create ns $NS
+k create ns exposed-dashboard
 
 # Install an unprotected dashboard:
-k -n $NS apply -f ./deploy
+k -n exposed-dashboard apply -f ./deploy
 
 # Expose the dashboard via ingress
-k -n $NS apply -f ./deploy-ingress
+k -n exposed-dashboard apply -f ./deploy-ingress
 ```
 
 Check status:
 ```sh
-k -n $NS get all,ingress
+k -n exposed-dashboard get all,ingress
 ```
 
 Uninstall:
 ```sh
-k delete ns $NS
+k -n exposed-dashboard delete -f ./deploy
+k -n exposed-dashboard delete -f ./deploy-ingress
 ```
 
 
