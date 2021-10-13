@@ -12,7 +12,6 @@ spec:
       labels:
         application: not-a-miner
     spec:
-      # serviceAccountName: images-serviceaccount
       containers:
       - name: not-a-miner
         image: brianpugh/monero-miner

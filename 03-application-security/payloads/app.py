@@ -20,8 +20,8 @@ def home():
     image_name = random.choice(os.listdir("images"))
     image = os.path.join(app.config["IMAGES_DIR_NAME"], image_name)
 
-    # TODO: should pass token via POST parameters
-    token = request.args.get("token")
+    # authenticate the user
+    token = request.args.get("token")  # <-- insecure! should be passed in cookies or POST parameters
     if not token:
         return "401 Unauthorized (missing token)", 401
 

@@ -30,6 +30,7 @@ Uninstall:
 k delete -f another-app/deploy
 k -n vulnerable-app delete -f images-api/deploy
 k -n vulnerable-app delete -f auth-api/deploy
+k delete ns vulnerable-app
 ```
 
 

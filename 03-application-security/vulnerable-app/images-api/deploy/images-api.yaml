@@ -42,7 +42,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: images.vulnapp.seck8s.slurm.io
+  - host: images.vulnerable-app.seck8s.slurm.io
     http:
       paths:
       - path: /

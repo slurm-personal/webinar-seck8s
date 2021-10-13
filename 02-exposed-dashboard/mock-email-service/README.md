@@ -20,5 +20,6 @@ k -n mock-email get all,ingress
 Uninstall:
 ```sh
 k -n mock-email delete -f ./deploy
+k delete ns mock-email
 ```
 

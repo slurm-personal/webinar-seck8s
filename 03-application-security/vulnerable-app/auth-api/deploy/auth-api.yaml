@@ -24,7 +24,7 @@ spec:
               name: auth-api-secret
               key: secret
         - name: REDIRECT_HOST
-          value: http://images.vulnapp.seck8s.slurm.io/
+          value: http://images.vulnerable-app.seck8s.slurm.io/
         - name: DB_HOST
           value: auth-db
         - name: DB_PORT
@@ -66,7 +66,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: auth.vulnapp.seck8s.slurm.io
+  - host: auth.vulnerable-app.seck8s.slurm.io
     http:
       paths:
       - path: /

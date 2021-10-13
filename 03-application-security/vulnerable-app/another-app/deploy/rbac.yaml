@@ -17,7 +17,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: default       # <-- unintentionally grant higher privileges
-  namespace: vulnapp  # <-- for the default SA in current namespace
+  namespace: vulnerable-app  # <-- for the default SA in current namespace
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

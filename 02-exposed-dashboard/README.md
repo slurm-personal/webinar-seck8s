@@ -59,9 +59,15 @@ Exposed and unprotected Kubernetes dashboard is one of the most common *attack e
    - [secrets](http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/_all/secrets?), namely [mock-email/mock-secret](http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/mock-email/secrets/mock-secret) (content hidden by the dashboard)
    - [config maps](http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/_all/configmaps?), namely [mock-email/mock-email-db-secret](http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/mock-email/configmaps/mock-email-db-secret) (can read the base64-encoded secrets)
    - [pods](http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/_all/pods?) or deployments, namely read [logs of the mock-email/mock-email-app](http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/mock-email/deployments/mock-email-app/logs)
+5. cleanup:
+   ```sh
+   k -n mock-email delete -f ./deploy
+   k delete ns mock-email
+   # (dashboard will be used later)
+   ```
 
 
-## Advices on prevention
+## Takeaways
 - do not expose the Kubernetes dashboard to the Internet
 - use RBAC
 - dashboard's SA has very limited permissions

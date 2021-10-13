@@ -36,10 +36,10 @@ Recommended to check out:
 
 ### Run a privileged pod and connect:
 ```
-k create ns priv
-k -n priv apply -f pod-privileged.yaml
-k -n priv wait --for=condition=Ready pod/pod-privileged
-k -n priv attach -it pod-privileged -c main
+k create ns privileged-pods
+k -n privileged-pods apply -f pod-privileged.yaml
+k -n privileged-pods wait --for=condition=Ready pod/pod-privileged
+k -n privileged-pods attach -it pod-privileged -c main
 ```
 
 
@@ -311,3 +311,12 @@ MYSQL_PASSWORD=c2VjcmV0cGFzc3dvcmQ=
 MYSQL_ROOT_PASSWORD=UEBzc3cwcmQ=
 ```
 
+
+## Cleanup
+```sh
+k -n privileged-pods delete -f pod-privileged.yaml
+k delete ns privileged-pods
+```
+
+## Takeaways
+- Consider hardening your Kubernetes cluster with [PodSecurityPolicy](https://kubernetes.io/docs/concepts/policy/pod-security-policy/) ([deprecated](https://kubernetes.io/blog/2021/04/06/podsecuritypolicy-deprecation-past-present-and-future/) since April 6, 2021) or [Admission Controllers](https://kubernetes.io/blog/2019/03/21/a-guide-to-kubernetes-admission-controllers/)
