@@ -9,6 +9,8 @@ Run a pod with elevated permissions:
 ![K8s threat matrix](../static/01-k8s-matrix.png)
 *Kubernetes threat matrix for a generic attack involving privileged pods*
 
+---
+
 ## kubectl ssh node
 
 Recommended to check out:
