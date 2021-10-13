@@ -2,6 +2,10 @@
 
 October 13, 2021
 
+Authors:
+- Artem Yushkovsky ([LinkedIn](https://www.linkedin.com/in/artem-yushkovsky/), [GitHub](https://github.com/atemate))
+- Maxim Mosharov @ [Whitespots.io](https://whitespots.io/) ([LinkedIn](https://www.linkedin.com/in/maxim-mosharov-50904113b/))
+
 ## Setup
 ```
 $ k version
@@ -12,5 +16,3 @@ $ k get nodes
 NAME     STATUS   ROLES                  AGE   VERSION
 seck8s   Ready    control-plane,master   17h   v1.22.2
 ```
-
-<!-- TODO: add more cluster info -->

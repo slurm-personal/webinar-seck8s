@@ -3,29 +3,34 @@
 Installation:
 
 ```sh
-NS=vulnapp
+k create ns vulnerable-app
 
-k create ns $NS
-k -n $NS create secret generic auth-db-secret \
+k apply -f another-app/deploy
+
+k -n vulnerable-app create secret generic auth-db-secret \
     --from-literal root_password=P@ssw0rd \
     --from-literal database=userdata \
     --from-literal username=user \
     --from-literal password=password
-k -n $NS create secret generic auth-api-secret \
+k -n vulnerable-app create secret generic auth-api-secret \
     --from-literal secret=secret123
-k -n $NS apply -f images-api/deploy
-k -n $NS apply -f auth-api/deploy
+
+k -n vulnerable-app apply -f images-api/deploy
+k -n vulnerable-app apply -f auth-api/deploy
 ```
 
 Check status:
 ```sh
-k -n $NS get all,ingress
-k -n $NS get po -w
+k -n vulnerable-app get all,ingress
+k -n vulnerable-app get po -w
 ```
 
 Uninstall:
 ```sh
-k delete ns $NS
+k delete -f another-app/deploy
+k -n vulnerable-app delete -f images-api/deploy
+k -n vulnerable-app delete -f auth-api/deploy
+k delete ns vulnerable-app
 ```
 
 
@@ -39,6 +44,8 @@ k delete ns $NS
 - `/` (invalid `token`): fails with 403
 - `/` (valid JWT in `token`): decodes the JWT using the key stored in env var `SECRET_KEY`, extracts the `user_role` from it. If `user_role='admin'`, offers additional functionality to select the file to read or upload a file
 
+## Service: another-service
+- some service that accidentally gave read-write permissions to the default service account in the namespace `vulnerable-app`
 
 ## Vulnerabilities:
 1. Weak jwt auth scheme with client-side role trust
