@@ -4,6 +4,11 @@ Exposed and unprotected Kubernetes dashboard is one of the most common *attack e
 
 > Note the [RedHat's article](https://cloud.redhat.com/blog/cryptojacking-attacks-in-kubernetes-how-to-stop-them) on Crytptojacking attacks in Kubernetes and how to stop them.
 
+---
+![K8s threat matrix](../static/02-k8s-matrix.png)
+*Kubernetes threat matrix for a generic resource hijacking attack*
+
+---
 
 ## Attack on Tesla, 2018
 
