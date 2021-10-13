@@ -5,10 +5,10 @@ metadata:
   labels:
     app: pentest
 spec:
-  #noteName: ...  # you can specify the node: `kubectl get node -o jsonpath='{.items[*].metadata.name}'`
   hostNetwork: true  # <-- dangerous option
   hostPID: true      # <-- dangerous option
   hostIPC: true      # <-- dangerous option
+  #noteName: ...  # you can specify the node: `kubectl get node -o jsonpath='{.items[*].metadata.name}'`
   containers:
   - name: main
     image: busybox
