@@ -1,37 +1,9 @@
 # Profit the K8s Dashboard
 Exposed and unprotected Kubernetes dashboard is one of the most common attack entrypoints on K8s clusters.
 
-## Steps to reproduce:
-1. install the kubernetes dashboard [./kube-web-view](kube-web-view) in an insecure way
-2. install the mock email-sending service [./mock-email-service](mock-email-service)
-3. explore the dashboard:
-   - [pods](http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/mock-payload/pods)
-   - [nodes](http://rus-vote.seck8s.slurm.io/clusters/local/nodes)
-   - [secrets](http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/mock-payload/secrets)
-   - [config maps](http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/mock-payload/configmaps)
-
+<!-- TODO: link to dashboard -->
 
 # Attacks
-
-## Attack on ${NAME}, June 2021
-
-### Timeline:
-- July 21: user's public report: https://habr.com/ru/post/568842/
-- July 22: tech team's report: https://habr.com/ru/post/569176/
-
-### Description:
-- ingress.enabled=true (NOT default)
-- Mistake in ingress configuration => Kubernetes WebView dashboard is available via several public DNS names
-- The dashboard is unprotected (no auth)
-- read-only access (cannot create new K8s object)
-- access to all K8s namespaces
-- [secrets were hidden by default](https://codeberg.org/hjacobs/kube-web-view/src/commit/bc5231296/deploy/deployment.yaml#L27-L29) in the dashboard (`--show-secrets`), however the team stored some secrets in config maps (!)
-- [container logs were accessible](https://codeberg.org/hjacobs/kube-web-view/src/commit/bc5231296/deploy/deployment.yaml#L24-L26), which is NOT default (`--show-container-logs`), in addition, the DEBUG mode was enabled on the production servers
-
-
-### Notes
-- other secrets like DB credentials might have been leaked to be used for future attacks (after the attack discovery the team claimed to have all secrets rotated)
-
 
 ## Attack on Tesla, 2018
 
@@ -52,9 +24,43 @@ Exposed and unprotected Kubernetes dashboard is one of the most common attack en
 - 2020 & 2021: attacking Kubeflow's pipelines to deploy mining images
 
 
+
+## Attack on ${NAME}, June 2021
+
+### Timeline:
+- July 21: user's public report: https://habr.com/ru/post/568842/
+- July 22: tech team's report: https://habr.com/ru/post/569176/
+
+### Description:
+- Mistake in ingress configuration => Kubernetes WebView dashboard is available via several public DNS names
+- ingress.enabled=true (NOT default)
+- The dashboard is unprotected (no auth)
+- read-only access (cannot create new K8s object)
+- [secrets were hidden by default](https://codeberg.org/hjacobs/kube-web-view/src/commit/bc5231296/deploy/deployment.yaml#L27-L29) in the dashboard (`--show-secrets`), however the team stored some secrets in config maps (!)
+- access to all K8s namespaces
+- [container logs were accessible](https://codeberg.org/hjacobs/kube-web-view/src/commit/bc5231296/deploy/deployment.yaml#L24-L26), which is NOT default (`--show-container-logs`), in addition, the DEBUG mode was enabled on the production servers
+
+
+### Notes
+- other secrets like DB credentials might have been leaked to be used for future attacks (after the attack discovery the team claimed to have all secrets rotated)
+
+
+
+## Steps to reproduce:
+1. install the kubernetes dashboard [./kube-web-view](kube-web-view) in an insecure way
+2. install the mock email-sending service [./mock-email-service](mock-email-service)
+3. explore the dashboard:
+   - [nodes](http://rus-vote.seck8s.slurm.io/clusters/local/nodes)
+   - [secrets](http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/mock-email/secrets)
+   - [config maps](http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/mock-email/configmaps)
+   - [pods](http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/mock-email/pods)
+
+
+
 # Prevention
 - do not expose the Kubernetes dashboard to the Internet
 - use RBAC
 - dashboard's SA has very limited permissions
-- allow only trusted images
+<!-- - allow only trusted images -->
 - regularly monitor the runtime environment (this includes monitoring the running containers, their images, and the processes that they run)
+- be careful with debug logs

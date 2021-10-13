@@ -44,6 +44,8 @@ k -n $NS delete -f auth-api/deploy
 - `/` (invalid `token`): fails with 403
 - `/` (valid JWT in `token`): decodes the JWT using the key stored in env var `SECRET_KEY`, extracts the `user_role` from it. If `user_role='admin'`, offers additional functionality to select the file to read or upload a file
 
+## Service: another-service
+<!-- TODO: description -->
 
 ## Vulnerabilities:
 1. Weak jwt auth scheme with client-side role trust

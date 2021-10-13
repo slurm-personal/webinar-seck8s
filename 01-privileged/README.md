@@ -7,6 +7,14 @@ TODO: picture with possible attacks.
 
 https://github.com/BishopFox/badPods/
 
+<!-- TODO: link to youtube Pavel -->
+
+
+Plan:
+- run maximally priveleged pod
+- show inside sth
+- link to github
+
 
 ### 1. pod privileged
 
