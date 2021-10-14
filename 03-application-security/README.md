@@ -106,6 +106,7 @@ Application vulnerabilities can bring wide range of different *attack entrypoint
 
 15. or shut down the cluster's payload (Deployment only, permitted by RBAC): `kubectl delete deployment auth-api`
     [![Use shell: denial-of-service](../static/03-application-security/13-shell-dos.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=1h01m11s)
+    [![Result: denial-of-service](../static/03-application-security/14-dos-result.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=1h01m39s)
 
 16. cleanup:
     ```sh
