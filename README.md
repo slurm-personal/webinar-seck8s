@@ -1,5 +1,5 @@
 # Kubernetes Security Webinar
-October 13, 2021
+[[in Russian] YouTube video](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=1183s) (October 13, 2021)
 
 Authors:
 - Artem Yushkovsky ([LinkedIn](https://www.linkedin.com/in/artem-yushkovsky/), [GitHub](https://github.com/atemate))
