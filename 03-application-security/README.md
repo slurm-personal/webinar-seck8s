@@ -21,9 +21,11 @@ Application vulnerabilities can bring wide range of different *attack entrypoint
 
 1. deploy [./vulnerable-app](vulnerable-app) (both `auth-api` and `images-api`) and `another-app` (empty)
 
-2. explore the images service: [http://images.vulnerable-app.seck8s.slurm.io](http://images.vulnerable-app.seck8s.slurm.io), [http://images.vulnerable-app.seck8s.slurm.io?token=foo](http://images.vulnerable-app.seck8s.slurm.io?token=foo)
+2. explore the images service: [http://images.vulnerable-app.seck8s.slurm.io](http://images.vulnerable-app.seck8s.slurm.io), [http://images.vulnerable-app.seck8s.slurm.io?token=foo](http://images.vulnerable-app.seck8s.slurm.io?token=foo):
+[![Images-api forbidden](../static/03-application-security/01-images-api.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=49m31s)
 
-3. explore the auth service: [http://auth.vulnerable-app.seck8s.slurm.io/](http://auth.vulnerable-app.seck8s.slurm.io/), sign-up a user, login and be redirected to the images service
+3. explore the auth service: [http://auth.vulnerable-app.seck8s.slurm.io/](http://auth.vulnerable-app.seck8s.slurm.io/), sign-up a user, login and be redirected to the images service:
+[![Auth-api signup](../static/03-application-security/02-auth-api-signup.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=49m56s)
 
 4. side note: it is insecure to pass sensitive information in GET parameters, see how it gets logged to stdout by Flask: [dashboard link](http://dashboard.seck8s.slurm.io/clusters/local/namespaces/vulnerable-app/deployments/images-api/logs)
 
@@ -36,6 +38,7 @@ Application vulnerabilities can bring wide range of different *attack entrypoint
     - leaked through the K8s configuration (secret mount to the env var `SECRET_KEY` is hard-coded in the manifest): [dashboard auth-api](http://dashboard.seck8s.slurm.io/clusters/local/namespaces/vulnerable-app/deployments/auth-api), [dashboard images-api](http://dashboard.seck8s.slurm.io/clusters/local/namespaces/vulnerable-app/deployments/images-api)
     - since the manifests are version-controlled, can be found in the Git commit history (`git blame`): [github link](https://github.com/Slurmio/webinar-seck8s/blob/98bab96647708ab5368b5b51ccdf96dd2071894e/03-application-security/vulnerable-app/images-api/deploy/images-api.yaml#L22) (*vulnerability: [Hard-Coded Credentials](https://owasp.org/www-community/vulnerabilities/Use_of_hard-coded_password)*. Remember: source code is not secret!)
     - the secret is weak therefore very easy to crack - in minutes with the tool [lmammino/jwt-cracker](https://github.com/lmammino/jwt-cracker) (*vulnerability: Weak Secret*)
+    [![Cracked jwt token](../static/03-application-security/03-jwt-cracked.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=52m45s)
 
 7. escalate provileges by changing the `"role": "user"` to `"role": "admin"` in the JWT payload (*vulnerability: [Broken User Authentication](https://owasp.org/www-project-top-ten/2017/A2_2017-Broken_Authentication)*)
 
