@@ -46,10 +46,14 @@ Application vulnerabilities can bring wide range of different *attack entrypoint
     [![Cracked jwt token](../static/03-application-security/04-jwt-cracked.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=53m09s)
 
 9. proceed to `images-api` with the new token, see the admin page
+    [![Images-api admin](../static/03-application-security/05-images-admin.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=53m20s)
 
 ---
 
 10. read some files from the pod: `../../../../../../../../var/run/secrets/kubernetes.io/serviceaccount/token` (pod service account's token and certificate), `../app.py` (source code of the Flask app), `../../../../../../etc/shadow/proc/1/environ` (pod environment variables), etc. (*vulnerability: [LFI, Local File Inclusion](https://owasp.org/www-project-web-security-testing-guide/v41/4-Web_Application_Security_Testing/07-Input_Validation_Testing/11.1-Testing_for_Local_File_Inclusion)* + too high privileges as the pod is running as `root` in the container)
+[![LFI read SA certificate](../static/03-application-security/06-var-run-kubernetes-crt.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=54m44s)
+[![LFI read SA certificate: base64-encoded](../static/03-application-security/07-var-run-kubernetes-crt-base64enc.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=54m45s)
+[![LFI read SA certificate: base64-decoded](../static/03-application-security/08-var-run-kubernetes-crt-base64dec.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=54m56s)
 
 > Note: by now, we acquired the service account credentials to the cluster. If we know the external Kube API address (if it's exposed), then we have the remote kubectl access:
 > `kubectl --server=https://kubernetes.default.svc --certificate-authority=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt --token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token) <command>`
