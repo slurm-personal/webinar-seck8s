@@ -4,6 +4,8 @@
 Authors:
 - Artem Yushkovsky ([LinkedIn](https://www.linkedin.com/in/artem-yushkovsky/), [GitHub](https://github.com/atemate))
 - Maxim Mosharov @ [Whitespots.io](https://whitespots.io/) ([LinkedIn](https://www.linkedin.com/in/maxim-mosharov-50904113b/))
+[![Hello world](./static/00-hello-world.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8)
+
 
 ---
 ![K8s threat matrix](./static/k8s-matrix.png)
