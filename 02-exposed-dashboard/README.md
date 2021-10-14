@@ -58,7 +58,7 @@ Exposed and unprotected Kubernetes dashboard is one of the most common *attack e
 1. deploy the kubernetes dashboard [./kube-web-view](kube-web-view) in an insecure way
 2. deploy the mock email-sending service [./mock-email-service](mock-email-service)
 3. explore the service at [mock-email.seck8s.slurm.io](http://mock-email.seck8s.slurm.io), register a user
-![Register a user](../static/02-exposed-dashboard/01-register)
+![Register a user](../static/02-exposed-dashboard/01-register.png)
 4. explore the dashboard:
    - [http://anything.seck8s.slurm.io/](http://anything.seck8s.slurm.io/)
    - [http://rus-vote.seck8s.slurm.io/](http://rus-vote.seck8s.slurm.io/)
