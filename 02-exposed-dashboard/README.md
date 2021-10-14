@@ -60,10 +60,10 @@ Exposed and unprotected Kubernetes dashboard is one of the most common *attack e
 3. explore the service at [mock-email.seck8s.slurm.io](http://mock-email.seck8s.slurm.io), register a user
 [![Register a user](../static/02-exposed-dashboard/01-register.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=40m27s)
 4. explore the dashboard:
-   - [http://anything.seck8s.slurm.io/](http://anything.seck8s.slurm.io/)
-   - [http://rus-vote.seck8s.slurm.io/](http://rus-vote.seck8s.slurm.io/)
+   - [http://rus-vote.seck8s.slurm.io/](http://rus-vote.seck8s.slurm.io/), [http://anything.seck8s.slurm.io/](http://anything.seck8s.slurm.io/) - dashboard serves as a default backend
    - [nodes](http://rus-vote.seck8s.slurm.io/clusters/local/nodes)
    - [secrets](http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/_all/secrets?), namely [mock-email/mock-secret](http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/mock-email/secrets/mock-secret) (content hidden by the dashboard)
+   [![Secret hidden](../static/02-exposed-dashboard/02-secret-hidden.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=41m00s)
    - [config maps](http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/_all/configmaps?), namely [mock-email/mock-email-db-secret](http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/mock-email/configmaps/mock-email-db-secret) (can read the base64-encoded secrets)
    - [pods](http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/_all/pods?) or deployments, namely read [logs of the mock-email/mock-email-app](http://rus-vote.seck8s.slurm.io/clusters/local/namespaces/mock-email/deployments/mock-email-app/logs)
 5. cleanup:
