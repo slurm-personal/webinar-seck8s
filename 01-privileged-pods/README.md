@@ -110,6 +110,7 @@ users:
     client-certificate-data: REDACTED
     client-key-data: REDACTED
 ```
+![Kube config view](../static/01-privileged-pods/01-kube-config-view.png)
 
 Kubernetes node-specific secrets:
 ```
