@@ -6,8 +6,7 @@ Authors:
 - Maxim Mosharov @ [Whitespots.io](https://whitespots.io/) ([LinkedIn](https://www.linkedin.com/in/maxim-mosharov-50904113b/))
 - Host: Marsel Ibraev @ [Slurm.io](https://slurm.io/) (email: `m.ibraev` `at` `slurm.io`)
 
-<br/>
-
+---
 [![Hello world](./static/00-hello-world.png)](https://www.youtube.com/watch?v=koTqZS-ThZ8)
 
 
